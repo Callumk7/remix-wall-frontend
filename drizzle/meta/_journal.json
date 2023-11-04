@@ -8,6 +8,13 @@
       "when": 1698313989290,
       "tag": "0000_uneven_rockslide",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1699110690653,
+      "tag": "0001_misty_thunderbolt",
+      "breakpoints": true
     }
   ]
 }

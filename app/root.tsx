@@ -1,5 +1,5 @@
 import stylesheet from "@/tw.css";
-import type { LinksFunction } from "@remix-run/node";
+import { json, type LinksFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -7,11 +7,22 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
+import { UserControls } from "./features/auth/components/UserControls";
+import { auth } from "./features/auth/helper";
+import { authenticator } from "./features/auth/auth.server";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const session = await authenticator.isAuthenticated(request);
+
+  return json({ session });
+};
+
 export default function App() {
+  const { session } = useLoaderData<typeof loader>();
   return (
     <html lang="en">
       <head>
@@ -21,9 +32,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <form action="/sign-out" method="POST">
-          <button>Logout</button>
-        </form>
+        <UserControls user={session} />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
