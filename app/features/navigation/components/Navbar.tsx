@@ -18,6 +18,10 @@ const links = [
     to: "/wall",
   },
   {
+    name: "Journal",
+    to: "/journal",
+  },
+  {
     name: "Profile",
     to: "/profile",
   },
@@ -25,12 +29,16 @@ const links = [
 
 export function Navbar() {
   return (
-    <nav>
+    <nav className="mx-auto my-5 flex w-4/5 gap-x-6">
       {links.map((link) => (
-        <Link key={link.name} to={link.to}>
-          {link.name}
-        </Link>
+        <NavLink key={link.name} link={link} />
       ))}
     </nav>
   );
+}
+
+// TODO: Need to link into how links and accessibility works with react aria components, and make sure that I also don't break client side routing.
+
+function NavLink({ link }: { link: { name: string; to: string } }) {
+  return <Link to={link.to}>{link.name}</Link>;
 }

@@ -15,6 +15,13 @@
       "when": 1699181025518,
       "tag": "0001_wooden_human_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1699217536522,
+      "tag": "0002_lovely_blizzard",
+      "breakpoints": true
     }
   ]
 }

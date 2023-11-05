@@ -1,9 +1,19 @@
 import type { Config } from "tailwindcss";
+import { mauve, ruby, cyan, mint, blackA, whiteA } from "@radix-ui/colors";
 
 export default {
 	content: ["./app/**/*.{js,jsx,ts,tsx}"],
 	theme: {
-		extend: {},
+		extend: {
+			colors: {
+				...mauve,
+				...ruby,
+				...cyan,
+				...mint,
+				...blackA,
+				...whiteA,
+			}
+		},
 	},
-	plugins: [],
+	plugins: [require("tailwindcss-animate"), require("tailwindcss-react-aria-components")],
 } satisfies Config;

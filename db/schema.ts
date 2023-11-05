@@ -55,6 +55,7 @@ export const posts = sqliteTable("posts", {
 	authorId: integer("authorId").notNull(),
 	inGroup: integer("in_group", { mode: "boolean" }),
 	groupId: integer("group_id"),
+	isPrivate: integer("is_private", { mode: "boolean" }).notNull().default(false),
 });
 
 export const postsRelations = relations(posts, ({ one }) => ({
