@@ -12,6 +12,7 @@ import {
 import { UserControls } from "./features/auth/components/UserControls";
 import { auth } from "./features/auth/helper";
 import { authenticator } from "./features/auth/auth.server";
+import { Navbar } from "./features/navigation/components/Navbar";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
 
@@ -32,6 +33,7 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <Navbar />
         <UserControls user={session} />
         <Outlet />
         <ScrollRestoration />
