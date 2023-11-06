@@ -1,4 +1,6 @@
-import { Link } from "@remix-run/react";
+import { Button } from "@/components/ui/button";
+import { UserData } from "@/features/auth/types";
+import { Link, useFetcher } from "@remix-run/react";
 
 const links = [
   {
@@ -27,17 +29,32 @@ const links = [
   },
 ];
 
-export function Navbar() {
+interface NavbarProps {
+  session: UserData | null;
+}
+
+export function Navbar({ session }: NavbarProps) {
+  const fetcher = useFetcher();
   return (
-    <nav className="mx-auto my-5 flex w-4/5 gap-x-6">
-      {links.map((link) => (
-        <NavLink key={link.name} link={link} />
-      ))}
+    <nav className="mx-auto my-5 flex w-4/5 justify-between">
+      <div className="flex gap-x-6">
+        {links.map((link) => (
+          <NavLink key={link.name} link={link} />
+        ))}
+      </div>
+      {session && (
+        <div className="flex items-center gap-x-4">
+          <p>{session.userName}</p>
+          <form action="/sign-out" method="POST">
+            <Button variant={"secondary"} type="submit">
+              Logout
+            </Button>
+          </form>
+        </div>
+      )}
     </nav>
   );
 }
-
-// TODO: Need to link into how links and accessibility works with react aria components, and make sure that I also don't break client side routing.
 
 function NavLink({ link }: { link: { name: string; to: string } }) {
   return <Link to={link.to}>{link.name}</Link>;

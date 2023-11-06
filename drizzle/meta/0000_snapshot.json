@@ -1,9 +1,55 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "fb48474d-90a4-49e2-b06b-acd6be829b4c",
+  "id": "6e309643-214a-4938-a649-8964b5ab574d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "groups": {
+      "name": "groups",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "posts": {
       "name": "posts",
       "columns": {
@@ -64,11 +110,63 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "in_group": {
+          "name": "in_group",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "group_id": {
+          "name": "group_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_private": {
+          "name": "is_private",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "user_friends": {
+      "name": "user_friends",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "friend_id": {
+          "name": "friend_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "user_friends_user_id_friend_id_pk": {
+          "columns": [
+            "friend_id",
+            "user_id"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "users": {
@@ -113,6 +211,63 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "users_to_groups": {
+      "name": "users_to_groups",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "group_id": {
+          "name": "group_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "users_to_groups_user_id_users_id_fk": {
+          "name": "users_to_groups_user_id_users_id_fk",
+          "tableFrom": "users_to_groups",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "users_to_groups_group_id_groups_id_fk": {
+          "name": "users_to_groups_group_id_groups_id_fk",
+          "tableFrom": "users_to_groups",
+          "tableTo": "groups",
+          "columnsFrom": [
+            "group_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "users_to_groups_user_id_group_id_pk": {
+          "columns": [
+            "group_id",
+            "user_id"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     }
   },

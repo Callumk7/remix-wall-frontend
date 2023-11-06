@@ -46,8 +46,12 @@ export const userFriendsRelations = relations(userFriends, ({ one }) => ({
 
 export const posts = sqliteTable("posts", {
 	id: integer("id").primaryKey(),
-	createdAt: integer("created_at").default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: integer("updated_at").default(sql`CURRENT_TIMESTAMP`),
+	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
+	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
 	hasBody: integer("has_body", { mode: "boolean" }),
 	body: text("body"),
 	hasImage: integer("has_image", { mode: "boolean" }),
@@ -100,6 +104,7 @@ export const usersToGroups = sqliteTable(
 // Generated Types:
 export type Post = typeof posts.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type Group = typeof groups.$inferSelect;
 
 // Created Types:
 export interface PostWithAuthor extends Post {

@@ -4,6 +4,7 @@
 
 import { Container } from "@/components/Container";
 import { auth } from "@/features/auth/helper";
+import { getJournalFromDate } from "@/features/journal/queries";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { db } from "db";
@@ -12,9 +13,9 @@ import { eq } from "drizzle-orm";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await auth(request);
-  const userPosts = await db.select().from(posts).where(eq(posts.authorId, session.id));
+  const userPosts = await getJournalFromDate(session.id);
 
-  // We want to group posts by date. This could be done on the server ahead of time, 
+  // We want to group posts by date. This could be done on the server ahead of time,
   // but this could also be done on the client..
 
   return json({ userPosts });

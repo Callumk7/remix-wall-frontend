@@ -8,10 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  useNavigate,
 } from "@remix-run/react";
-import { UserControls } from "./features/auth/components/UserControls";
-import { auth } from "./features/auth/helper";
 import { authenticator } from "./features/auth/auth.server";
 import { Navbar } from "./features/navigation/components/Navbar";
 
@@ -25,7 +22,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function App() {
   const { session } = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
   return (
     <html lang="en">
       <head>
@@ -35,8 +31,7 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-mauve2 text-mauve12">
-        <Navbar />
-        <UserControls user={session} />
+        <Navbar session={session} />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
