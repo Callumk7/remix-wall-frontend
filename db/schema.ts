@@ -1,5 +1,10 @@
 import { relations, sql } from "drizzle-orm";
-import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+	integer,
+	primaryKey,
+	sqliteTable,
+	text,
+} from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
 	id: integer("id").primaryKey(),
@@ -52,14 +57,19 @@ export const posts = sqliteTable("posts", {
 	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,
 	),
+	day: integer("day"),
+	month: integer("month"),
+	year: integer("year"),
 	hasBody: integer("has_body", { mode: "boolean" }),
 	body: text("body"),
 	hasImage: integer("has_image", { mode: "boolean" }),
 	image: text("image"),
-	authorId: integer("authorId").notNull(),
+	authorId: integer("author_id").notNull(),
 	inGroup: integer("in_group", { mode: "boolean" }),
 	groupId: integer("group_id"),
-	isPrivate: integer("is_private", { mode: "boolean" }).notNull().default(false),
+	isPrivate: integer("is_private", { mode: "boolean" })
+		.notNull()
+		.default(false),
 });
 
 export const postsRelations = relations(posts, ({ one }) => ({
