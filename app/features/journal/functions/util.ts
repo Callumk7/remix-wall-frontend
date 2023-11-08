@@ -5,6 +5,8 @@ interface PostSeries {
 	posts: Post[];
 }
 
+// This function collects all posts into a series organised by date. I have added a second 
+// Level of functionality, which simply ensures that the series is sorted by date
 export function reduceToPostSeries(posts: Post[]): PostSeries[] {
 	const postSeries = posts.reduce((acc: PostSeries[], post) => {
 		// Transform the timestamp to a date string format 'YYYY-MM-DD'
@@ -31,6 +33,8 @@ export function reduceToPostSeries(posts: Post[]): PostSeries[] {
 
 		return acc;
 	}, []);
+
+	postSeries.sort((a, b) => a.date.getDate() - b.date.getDate())
 
 	return postSeries;
 }

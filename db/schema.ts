@@ -6,6 +6,10 @@ import {
 	text,
 } from "drizzle-orm/sqlite-core";
 
+//
+//
+//
+// USER TABLES AND RELATIONS
 export const users = sqliteTable("users", {
 	id: integer("id").primaryKey(),
 	fullName: text("full_name"),
@@ -49,6 +53,10 @@ export const userFriendsRelations = relations(userFriends, ({ one }) => ({
 	}),
 }));
 
+//
+//
+//
+// POST TABLES AND RELATIONS
 export const posts = sqliteTable("posts", {
 	id: integer("id").primaryKey(),
 	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
@@ -83,6 +91,10 @@ export const postsRelations = relations(posts, ({ one }) => ({
 	}),
 }));
 
+//
+//
+//
+// GROUP TABLES AND RELATIONS
 export const groups = sqliteTable("groups", {
 	id: integer("id").primaryKey(),
 	createdAt: integer("created_at").default(sql`CURRENT_TIMESTAMP`),

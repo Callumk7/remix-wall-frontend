@@ -50,6 +50,9 @@ dependencies:
   remix-auth-form:
     specifier: ^1.4.0
     version: 1.4.0(@remix-run/server-runtime@2.1.0)(remix-auth@3.6.0)
+  remix-typedjson:
+    specifier: ^0.3.1
+    version: 0.3.1(@remix-run/react@2.1.0)(@remix-run/server-runtime@2.1.0)(react@18.2.0)
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.3.5)
@@ -7503,6 +7506,18 @@ packages:
       '@remix-run/react': 2.1.0(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)
       '@remix-run/server-runtime': 2.1.0(typescript@5.2.2)
       uuid: 8.3.2
+    dev: false
+
+  /remix-typedjson@0.3.1(@remix-run/react@2.1.0)(@remix-run/server-runtime@2.1.0)(react@18.2.0):
+    resolution: {integrity: sha512-XaLU3slWaUXTWPQe6u5rX4xJuqr665+wk1mRmepFu5Hn4DTP9V0zGOkCqCphCExxZ2Kqg5u+uZbas6AZRaxQzA==}
+    peerDependencies:
+      '@remix-run/react': ^1.16.0 || ^2.0
+      '@remix-run/server-runtime': ^1.16.0 || ^2.0
+      react: ^17.0.2 || ^18.0.0
+    dependencies:
+      '@remix-run/react': 2.1.0(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)
+      '@remix-run/server-runtime': 2.1.0(typescript@5.2.2)
+      react: 18.2.0
     dev: false
 
   /require-like@0.1.2:
