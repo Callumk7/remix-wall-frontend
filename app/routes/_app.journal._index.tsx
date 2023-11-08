@@ -1,6 +1,6 @@
 import { auth } from "@/features/auth/helper";
 import { JournalPageCard } from "@/features/journal/components/JournalPageCard";
-import { reduceToPostSeries } from "@/features/journal/functions/util";
+import { reduceToPostBatchArray } from "@/features/journal/functions/util";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { db } from "db";
 import { posts } from "db/schema";
@@ -15,7 +15,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     .select()
     .from(posts)
     .where(eq(posts.authorId, session.id));
-  const allPostsByDate = reduceToPostSeries(allUserPosts);
+  const allPostsByDate = reduceToPostBatchArray(allUserPosts);
 
   return typedjson({ session, allPostsByDate });
 };
@@ -28,7 +28,7 @@ export default function JournalIndex() {
   return (
     <div className="grid grid-cols-3 gap-4">
       {allPostsByDate.map((series) => (
-        <JournalPageCard key={series.date.getTime()} postSeries={series} />
+        <JournalPageCard key={series.date.getTime()} postBatch={series} />
       ))}
     </div>
   );

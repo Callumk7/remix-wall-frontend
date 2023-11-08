@@ -13,7 +13,7 @@ authenticator.use(
 	new FormStrategy(async ({ form }) => {
 		const email = form.get("email");
 		const password = form.get("password");
-		console.log(`we got here with username: ${email}`);
+		console.log(`we got here with username: ${email?.toString()}`);
 
 		// WARN: these invariants didn't throw, for some reason, I should probably test these out to make sure that I
 		// full understand how they are supposed to work...

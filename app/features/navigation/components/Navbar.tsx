@@ -11,10 +11,6 @@ const links = [
     to: "/sign-out",
   },
   {
-    name: "protected",
-    to: "/protected",
-  },
-  {
     name: "Wall",
     to: "/wall",
   },

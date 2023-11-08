@@ -1,28 +1,33 @@
 import { Link } from "@remix-run/react";
-import { PostSeries } from "../types";
+import { PostBatchByDate } from "../types";
 import { getDayOfYear } from "@/features/posts/util";
 
 // TODO: I should make a card component with a shared card style (like this component has)
 
 interface JournalPageCard {
-  postSeries: PostSeries;
+  postBatch: PostBatchByDate;
 }
-export function JournalPageCard({ postSeries }: JournalPageCard) {
+export function JournalPageCard({ postBatch }: JournalPageCard) {
   const cardHeaderText =
-    postSeries.date.getDate() +
+    postBatch.date.getDate() +
     "-" +
-    postSeries.date.getMonth() +
+    postBatch.date.getMonth() +
     "-" +
-    postSeries.date.getFullYear();
+    postBatch.date.getFullYear();
 
-  const day = getDayOfYear(postSeries.date)
+  const day = getDayOfYear(postBatch.date);
 
   return (
-    <Link to={`/journal/${day}`} className="rounded-md border hover:bg-mauve3 p-3 h-80 overflow-clip">
-      <h3 className="font-bold text-lg">{cardHeaderText}</h3>
+    <Link
+      to={`/journal/${postBatch.date.getTime()}`}
+      className="h-80 overflow-clip rounded-md border p-3 hover:bg-mauve3"
+    >
+      <h3 className="text-lg font-bold">{cardHeaderText}</h3>
       <div className="flex flex-col gap-y-1">
-        {postSeries.posts.map((post) => (
-          <p key={post.id} className="text-sm text-mauve10">{post.body}</p>
+        {postBatch.posts.map((post) => (
+          <p key={post.id} className="text-sm text-mauve10">
+            {post.body}
+          </p>
         ))}
       </div>
     </Link>

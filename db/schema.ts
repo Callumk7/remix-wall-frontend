@@ -11,7 +11,7 @@ import {
 //
 // USER TABLES AND RELATIONS
 export const users = sqliteTable("users", {
-	id: integer("id").primaryKey(),
+	id: text("id").primaryKey(),
 	fullName: text("full_name"),
 	userName: text("user_name").notNull(),
 	email: text("email").notNull(),
@@ -32,8 +32,8 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const userFriends = sqliteTable(
 	"user_friends",
 	{
-		userId: integer("user_id").notNull(),
-		friendId: integer("friend_id").notNull(),
+		userId: text("user_id").notNull(),
+		friendId: text("friend_id").notNull(),
 	},
 	(t) => ({
 		pk: primaryKey(t.userId, t.friendId),
@@ -58,23 +58,25 @@ export const userFriendsRelations = relations(userFriends, ({ one }) => ({
 //
 // POST TABLES AND RELATIONS
 export const posts = sqliteTable("posts", {
-	id: integer("id").primaryKey(),
+	id: text("id").primaryKey(),
+	// created and updated are dates when the post was created in the database
 	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,
 	),
 	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,
 	),
-	day: integer("day"),
-	month: integer("month"),
-	year: integer("year"),
-	hasBody: integer("has_body", { mode: "boolean" }),
+	// these times are what the user sets in the UI
+	day: integer("day").notNull(),
+	month: integer("month").notNull(),
+	year: integer("year").notNull(),
+	entryDate: integer("entry_date", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
 	body: text("body"),
-	hasImage: integer("has_image", { mode: "boolean" }),
-	image: text("image"),
-	authorId: integer("author_id").notNull(),
+	authorId: text("author_id").notNull(),
 	inGroup: integer("in_group", { mode: "boolean" }),
-	groupId: integer("group_id"),
+	groupId: text("group_id"),
 	isPrivate: integer("is_private", { mode: "boolean" })
 		.notNull()
 		.default(false),
@@ -96,7 +98,7 @@ export const postsRelations = relations(posts, ({ one }) => ({
 //
 // GROUP TABLES AND RELATIONS
 export const groups = sqliteTable("groups", {
-	id: integer("id").primaryKey(),
+	id: text("id").primaryKey(),
 	createdAt: integer("created_at").default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: integer("updated_at").default(sql`CURRENT_TIMESTAMP`),
 	name: text("name").notNull(),
@@ -111,10 +113,10 @@ export const groupsRelations = relations(groups, ({ many }) => ({
 export const usersToGroups = sqliteTable(
 	"users_to_groups",
 	{
-		userId: integer("user_id")
+		userId: text("user_id")
 			.notNull()
 			.references(() => users.id),
-		groupId: integer("group_id")
+		groupId: text("group_id")
 			.notNull()
 			.references(() => groups.id),
 	},
@@ -130,6 +132,5 @@ export type Group = typeof groups.$inferSelect;
 
 // Created Types:
 export interface PostWithAuthor extends Post {
-	authorId: number;
 	author: User;
 }

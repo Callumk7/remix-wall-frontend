@@ -1,6 +1,6 @@
 import { Post } from "db/schema";
 
-export interface PostSeries {
+export interface PostBatchByDate {
 	date: Date;
 	posts: Post[];
 }

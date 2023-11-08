@@ -7,16 +7,20 @@ import { KeyboardEvent, useRef } from "react";
 // TODO: Pending state for new posts
 // TODO: Disable form when pending
 
-export function CreatePostForm() {
+interface CreatePostFormProps {
+  date?: Date;
+}
+
+export function CreatePostForm({ date }: CreatePostFormProps) {
   const fetcher = useFetcher();
-  const formRef = useRef<HTMLFormElement>(null)
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Enter' &&  !e.shiftKey) {
-      e.preventDefault()
-      fetcher.submit(formRef.current)
-    }  
-  }
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      fetcher.submit(formRef.current);
+    }
+  };
 
   return (
     <fetcher.Form
@@ -25,7 +29,13 @@ export function CreatePostForm() {
       action="/posts"
       ref={formRef}
     >
-      <TextArea type="text" name="body" label="Post body" onKeyDown={handleKeyDown} />
+      <input type="hidden" value={date!.toISOString()} name="entryDate" />
+      <TextArea
+        type="text"
+        name="body"
+        label="Post body"
+        onKeyDown={handleKeyDown}
+      />
       <Button type="submit">Send Post</Button>
       <div className="flex gap-2">
         <Switch label="Private" name="private" value="private" />

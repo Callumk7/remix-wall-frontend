@@ -1,37 +1,27 @@
 import { Post } from "db/schema";
-import { PostSeries } from "../types";
+import { PostBatchByDate } from "../types";
 
+export function reduceToPostBatchArray(posts: Post[]): PostBatchByDate[] {
+	const postBatchArray = posts.reduce((acc: PostBatchByDate[], post) => {
+		const date = new Date(post.entryDate!).toISOString().split("T")[0];
 
-// This function collects all posts into a series organised by date. I have added a second 
-// Level of functionality, which simply ensures that the series is sorted by date
-export function reduceToPostSeries(posts: Post[]): PostSeries[] {
-	const postSeries = posts.reduce((acc: PostSeries[], post) => {
-		// Transform the timestamp to a date string format 'YYYY-MM-DD'
-		const date = new Date(post.createdAt!).toISOString().split("T")[0];
-
-		// Find the corresponding date in the accumulated object
-		let dateGroup = acc.find(
-			(group) => group.date.toISOString().split("T")[0] === date,
+		let postBatch = acc.find(
+			(batch) => batch.date.toISOString().split("T")[0] === date,
 		);
 
-		// If no date group has been created yet, create one
-		if (!dateGroup) {
-			dateGroup = {
+		if (!postBatch) {
+			postBatch = {
 				date: new Date(date),
 				posts: [],
 			};
-
-			// Add the new date group to the accumulated object
-			acc.push(dateGroup);
+			acc.push(postBatch);
 		}
 
-		// Add the current post to the current date group
-		dateGroup.posts.push(post);
+		postBatch.posts.push(post);
 
 		return acc;
 	}, []);
 
-	postSeries.sort((a, b) => a.date.getDate() - b.date.getDate())
-
-	return postSeries;
+	postBatchArray.sort((a, b) => a.date.getDate() - b.date.getDate());
+	return postBatchArray;
 }

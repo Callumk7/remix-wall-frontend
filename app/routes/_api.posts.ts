@@ -1,4 +1,5 @@
 import { auth } from "@/features/auth/helper";
+import { uuidv4 } from "@/features/auth/uuidGenerator";
 import { getDayOfYear } from "@/features/posts/util";
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { db } from "db";
@@ -6,10 +7,14 @@ import { posts } from "db/schema";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const session = await auth(request);
+
 	const formData = await request.formData();
 	const body = formData.get("body")?.toString();
 	const priv = formData.get("private")?.toString();
 	const addDay = formData.get("addDay")?.toString();
+
+	const entryDateISOString = formData.get("entryDate")?.toString();
+	const entryDate = new Date(entryDateISOString!);
 
 	let isPrivate = false;
 	if (priv) {
@@ -19,24 +24,23 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const createdAt = new Date();
 	if (addDay) {
 		createdAt.setDate(createdAt.getDate() + 1);
+		entryDate.setDate(entryDate.getDate() + 1);
 	}
-
-	const dayOfYear = getDayOfYear(createdAt);
 
 	console.log(createdAt.getFullYear());
 
 	// Create an entry in the database, will need to be validated at some point
 	// I should create somewhere to put common queries
 	const newPost = await db.insert(posts).values({
-		hasBody: true,
+		id: `post_${uuidv4()}`,
 		body: body,
-		hasImage: false,
 		authorId: session.id,
 		isPrivate: isPrivate,
 		createdAt: createdAt,
-		day: dayOfYear,
-		month: createdAt.getMonth(),
-		year: createdAt.getFullYear(),
+		entryDate: entryDate,
+		day: getDayOfYear(entryDate),
+		month: entryDate.getMonth(),
+		year: entryDate.getFullYear(),
 	});
 
 	console.log(JSON.stringify(newPost));
