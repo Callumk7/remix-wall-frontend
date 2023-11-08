@@ -1,9 +1,6 @@
 import { Post } from "db/schema";
+import { PostSeries } from "../types";
 
-interface PostSeries {
-	date: Date;
-	posts: Post[];
-}
 
 // This function collects all posts into a series organised by date. I have added a second 
 // Level of functionality, which simply ensures that the series is sorted by date

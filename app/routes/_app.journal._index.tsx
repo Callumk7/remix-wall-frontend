@@ -1,45 +1,34 @@
 import { auth } from "@/features/auth/helper";
-import { JournalTextPost } from "@/features/journal/components/JournalTextPost";
-import { getUserPostsBetweenDates } from "@/features/journal/functions/queries";
+import { JournalPageCard } from "@/features/journal/components/JournalPageCard";
 import { reduceToPostSeries } from "@/features/journal/functions/util";
-import { getDayOfYear } from "@/features/posts/util";
-import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { db } from "db";
+import { posts } from "db/schema";
+import { eq } from "drizzle-orm";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 
-// Here, we want to display:
-// 1. Today and Yesterday's posts,
-// 2. Controls for editing posts,
-// 3. Controls for moving back and fowards (not in the index)
-// 4. Controls for appending a post
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await auth(request);
 
-  const dayToday = getDayOfYear(new Date());
+  // We need all the posts, organised into a post series
+  const allUserPosts = await db
+    .select()
+    .from(posts)
+    .where(eq(posts.authorId, session.id));
+  const allPostsByDate = reduceToPostSeries(allUserPosts);
 
-  const userPosts = await getUserPostsBetweenDates(
-    dayToday - 1,
-    dayToday,
-    session.id,
-  );
-
-  // Posts should be organised into collections from each day
-  const organisedPosts = reduceToPostSeries(userPosts);
-
-  return typedjson({ session, organisedPosts });
+  return typedjson({ session, allPostsByDate });
 };
 
+// TODO: The user should be able to choose between single column (single day) and double day view
+
 export default function JournalIndex() {
-  const { session, organisedPosts } = useTypedLoaderData<typeof loader>();
+  const { session, allPostsByDate } = useTypedLoaderData<typeof loader>();
   // This should return the current day, and -1 day
   return (
-    <div className="grid grid-cols-2 gap-1">
-      {organisedPosts.map((series) => (
-        <div key={series.date.toString()}>
-          {series.posts.map((post) => (
-            <JournalTextPost key={post.id} post={post} />
-          ))}
-        </div>
+    <div className="grid grid-cols-3 gap-4">
+      {allPostsByDate.map((series) => (
+        <JournalPageCard key={series.date.getTime()} postSeries={series} />
       ))}
     </div>
   );

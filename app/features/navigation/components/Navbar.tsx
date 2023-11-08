@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { Button, Link } from "@/components/ui/button";
 import { UserData } from "@/features/auth/types";
-import { Link, useFetcher } from "@remix-run/react";
 
 const links = [
   {
@@ -34,7 +33,6 @@ interface NavbarProps {
 }
 
 export function Navbar({ session }: NavbarProps) {
-  const fetcher = useFetcher();
   return (
     <nav className="mx-auto my-5 flex w-4/5 justify-between">
       <div className="flex gap-x-6">
@@ -57,5 +55,9 @@ export function Navbar({ session }: NavbarProps) {
 }
 
 function NavLink({ link }: { link: { name: string; to: string } }) {
-  return <Link to={link.to}>{link.name}</Link>;
+  return (
+    <Link variant={"link"} to={link.to}>
+      {link.name}
+    </Link>
+  );
 }
