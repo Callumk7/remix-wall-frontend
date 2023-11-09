@@ -8,6 +8,26 @@ import { posts } from "db/schema";
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const session = await auth(request);
 
+	switch (request.method) {
+		case "POST": {
+			const newPost = handlePOST(request, session.id);
+
+			return json(
+				{ newPost },
+				{ status: 200, statusText: "Successfully created a new post" },
+			);
+		}
+
+		default: {
+			return json("Bad Request", {
+				status: 401,
+				statusText: `Bad Request, ${request.method} is not supported`,
+			});
+		}
+	}
+};
+
+const handlePOST = async (request: Request, userId: string) => {
 	const formData = await request.formData();
 	const body = formData.get("body")?.toString();
 	const priv = formData.get("private")?.toString();
@@ -34,7 +54,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const newPost = await db.insert(posts).values({
 		id: `post_${uuidv4()}`,
 		body: body,
-		authorId: session.id,
+		authorId: userId,
 		isPrivate: isPrivate,
 		createdAt: createdAt,
 		entryDate: entryDate,
@@ -45,8 +65,5 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	console.log(JSON.stringify(newPost));
 
-	return json(
-		{ newPost },
-		{ status: 200, statusText: "Successfully created a new post" },
-	);
+	return newPost;
 };

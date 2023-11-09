@@ -8,6 +8,13 @@
       "when": 1699462115630,
       "tag": "0000_wandering_black_bolt",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1699529562765,
+      "tag": "0001_faithful_nighthawk",
+      "breakpoints": true
     }
   ]
 }

@@ -14,7 +14,7 @@ interface InputProps extends TextFieldProps {
   label?: string;
 }
 
-const Input = forwardRef<HTMLDivElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, ...props }, ref) => {
     return (
       <TextField ref={ref} {...props} className={clsx("flex flex-col gap-1", className)}>
@@ -27,12 +27,13 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
 Input.displayName = "Input";
 
 // TEXTAREA COMPONENT
-const TextArea = forwardRef<HTMLDivElement, InputProps>(
+// TODO: Add class variance for different size text areas, and for resizeable text areas
+const TextArea = forwardRef<HTMLTextAreaElement, InputProps>(
   ({ className, label, ...props }, ref) => {
     return (
-      <TextField ref={ref} {...props} className={clsx("flex flex-col gap-1", className)}>
+      <TextField {...props} className={clsx("flex flex-col gap-1", className)}>
         <Label className="text-sm text-mauve11">{label}</Label>
-        <AriaTextArea className="w-full resize-none rounded-md border border-mauve6 bg-mauve1 p-1 ring-offset-mauve2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan7 focus-visible:ring-offset-2 disabled:pointer-events-none" />
+        <AriaTextArea ref={ref} className="w-full resize-none h-80 rounded-md border border-mauve6 bg-mauve1 p-1 ring-offset-mauve2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan7 focus-visible:ring-offset-2 disabled:pointer-events-none" />
       </TextField>
     );
   },

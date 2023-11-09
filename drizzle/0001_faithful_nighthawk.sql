@@ -1,0 +1,1 @@
+ALTER TABLE posts ADD `is_updated` integer DEFAULT false;

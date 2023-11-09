@@ -66,6 +66,7 @@ export const posts = sqliteTable("posts", {
 	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,
 	),
+	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
 	// these times are what the user sets in the UI
 	day: integer("day").notNull(),
 	month: integer("month").notNull(),

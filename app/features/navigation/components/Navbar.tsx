@@ -1,5 +1,6 @@
 import { Button, Link } from "@/components/ui/button";
 import { UserData } from "@/features/auth/types";
+import { useLocation } from "@remix-run/react";
 
 const links = [
   {
@@ -51,8 +52,15 @@ export function Navbar({ session }: NavbarProps) {
 }
 
 function NavLink({ link }: { link: { name: string; to: string } }) {
+  const location = useLocation();
   return (
-    <Link variant={"link"} to={link.to}>
+    <Link
+      variant={"link"}
+      to={link.to}
+      className={
+        location.pathname === link.to ? "underline decoration-2 decoration-ruby9" : ""
+      }
+    >
       {link.name}
     </Link>
   );

@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { Button as AriaButton, ButtonProps } from "react-aria-components";
 import { cva, type VariantProps } from "class-variance-authority";
 import { forwardRef } from "react";
-import { Link as RemixLink } from "@remix-run/react";
+import { Link as RemixLink, NavLink as RemixNavLink } from "@remix-run/react";
 import { RemixLinkProps } from "@remix-run/react/dist/components";
 
 const buttonVariants = cva(
@@ -61,4 +61,17 @@ const Link = forwardRef<HTMLAnchorElement, FullLinkProps>(
 );
 Link.displayName = "Link";
 
-export { Button, Link };
+const NavLink = forwardRef<HTMLAnchorElement, FullLinkProps>(
+  ({ className, variant, size, ...props }, ref) => {
+    return (
+      <RemixNavLink
+        className={clsx(buttonVariants({ className, variant, size }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  },
+);
+NavLink.displayName = "NavLink";
+
+export { Button, Link, NavLink };

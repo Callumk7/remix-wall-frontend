@@ -12,8 +12,12 @@ export default {
 				...mint,
 				...blackA,
 				...whiteA,
-			}
+			},
 		},
 	},
-	plugins: [require("tailwindcss-animate"), require("tailwindcss-react-aria-components")],
+	plugins: [
+		require("tailwindcss-animate"),
+		require("tailwindcss-react-aria-components"),
+		require("@tailwindcss/typography"),
+	],
 } satisfies Config;
