@@ -10,14 +10,17 @@ CREATE TABLE `posts` (
 	`id` text PRIMARY KEY NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` integer DEFAULT CURRENT_TIMESTAMP,
+	`is_updated` integer DEFAULT false,
 	`day` integer NOT NULL,
 	`month` integer NOT NULL,
 	`year` integer NOT NULL,
 	`entry_date` integer DEFAULT CURRENT_TIMESTAMP,
-	`body` text,
+	`body` text NOT NULL,
 	`author_id` text NOT NULL,
-	`in_group` integer,
+	`in_group` integer DEFAULT false NOT NULL,
 	`group_id` text,
+	`on_wall` integer DEFAULT false NOT NULL,
+	`wall_user_id` text,
 	`is_private` integer DEFAULT false NOT NULL
 );
 --> statement-breakpoint

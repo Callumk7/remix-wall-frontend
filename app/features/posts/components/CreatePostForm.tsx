@@ -6,12 +6,14 @@ import { KeyboardEvent, useRef } from "react";
 
 // TODO: Pending state for new posts
 // TODO: Disable form when pending
+// TODO: Make this form work for walls as well
 
 interface CreatePostFormProps {
   date?: Date;
+  action?: string;
 }
 
-export function CreatePostForm({ date }: CreatePostFormProps) {
+export function CreatePostForm({ date, action }: CreatePostFormProps) {
   const fetcher = useFetcher();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -26,10 +28,14 @@ export function CreatePostForm({ date }: CreatePostFormProps) {
     <fetcher.Form
       className="flex flex-col gap-3 p-4"
       method="POST"
-      action="/posts"
+      action={action}
       ref={formRef}
     >
-      <input type="hidden" value={date!.toISOString()} name="entryDate" />
+      <input
+        type="hidden"
+        value={date ? date.toISOString() : new Date().toISOString()}
+        name="entryDate"
+      />
       <TextArea
         type="text"
         name="body"

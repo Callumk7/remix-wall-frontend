@@ -19,7 +19,12 @@ export const users = sqliteTable("users", {
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
-	posts: many(posts),
+	posts: many(posts, {
+		relationName: "post_author",
+	}),
+	wallPosts: many(posts, {
+		relationName: "wall_user_id",
+	}),
 	friends: many(userFriends, {
 		relationName: "friends",
 	}),
@@ -67,17 +72,19 @@ export const posts = sqliteTable("posts", {
 		sql`CURRENT_TIMESTAMP`,
 	),
 	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
-	// these times are what the user sets in the UI
+	// these times are what the user sets in the UI for journal entries
 	day: integer("day").notNull(),
 	month: integer("month").notNull(),
 	year: integer("year").notNull(),
 	entryDate: integer("entry_date", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,
 	),
-	body: text("body"),
+	body: text("body").notNull(),
 	authorId: text("author_id").notNull(),
-	inGroup: integer("in_group", { mode: "boolean" }),
+	inGroup: integer("in_group", { mode: "boolean" }).notNull().default(false),
 	groupId: text("group_id"),
+	onWall: integer("on_wall", { mode: "boolean" }).notNull().default(false),
+	wallUserId: text("wall_user_id"),
 	isPrivate: integer("is_private", { mode: "boolean" })
 		.notNull()
 		.default(false),
@@ -87,10 +94,16 @@ export const postsRelations = relations(posts, ({ one }) => ({
 	author: one(users, {
 		fields: [posts.authorId],
 		references: [users.id],
+		relationName: "post_author",
 	}),
 	group: one(groups, {
 		fields: [posts.groupId],
 		references: [groups.id],
+	}),
+	wall: one(users, {
+		fields: [posts.wallUserId],
+		references: [users.id],
+		relationName: "post_wall_recipient",
 	}),
 }));
 

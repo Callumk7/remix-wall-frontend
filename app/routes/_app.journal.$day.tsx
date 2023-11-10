@@ -3,6 +3,7 @@ import { JournalDayView } from "@/features/journal/components/JournalDayView";
 import { JournalNavigation } from "@/features/journal/components/JournalNavigation";
 import { getUserPostsBetweenDates } from "@/features/journal/functions/queries";
 import { reduceToPostBatchArray } from "@/features/journal/functions/util";
+import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 

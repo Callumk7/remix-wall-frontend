@@ -53,7 +53,7 @@ const handlePOST = async (request: Request, userId: string) => {
 	// I should create somewhere to put common queries
 	const newPost = await db.insert(posts).values({
 		id: `post_${uuidv4()}`,
-		body: body,
+		body: body!,
 		authorId: userId,
 		isPrivate: isPrivate,
 		createdAt: createdAt,

@@ -1,6 +1,7 @@
 import { auth } from "@/features/auth/helper";
 import { JournalPageCard } from "@/features/journal/components/JournalPageCard";
 import { reduceToPostBatchArray } from "@/features/journal/functions/util";
+import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { db } from "db";
 import { posts } from "db/schema";
@@ -27,6 +28,7 @@ export default function JournalIndex() {
   // This should return the current day, and -1 day
   return (
     <div className="grid grid-cols-3 gap-4">
+      <CreatePostForm />
       {allPostsByDate.map((series) => (
         <JournalPageCard key={series.date.getTime()} postBatch={series} />
       ))}

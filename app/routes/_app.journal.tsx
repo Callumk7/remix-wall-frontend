@@ -2,11 +2,11 @@ import { Container } from "@/components/Container";
 import { JournalNavigation } from "@/features/journal/components/JournalNavigation";
 import { Outlet } from "@remix-run/react";
 
-export default function JournalPage() {
+export default function JournalLayout() {
   return (
-    <Container>
+    <div className="px-8">
       <Outlet />
-    </Container>
+    </div>
   );
 }
 
