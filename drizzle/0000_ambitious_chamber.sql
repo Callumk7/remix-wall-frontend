@@ -21,7 +21,8 @@ CREATE TABLE `posts` (
 	`group_id` text,
 	`on_wall` integer DEFAULT false NOT NULL,
 	`wall_user_id` text,
-	`is_private` integer DEFAULT false NOT NULL
+	`is_private` integer DEFAULT false NOT NULL,
+	FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `user_friends` (

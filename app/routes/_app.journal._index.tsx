@@ -28,7 +28,7 @@ export default function JournalIndex() {
   // This should return the current day, and -1 day
   return (
     <div className="grid grid-cols-3 gap-4">
-      <CreatePostForm />
+      <CreatePostForm action="/posts" />
       {allPostsByDate.map((series) => (
         <JournalPageCard key={series.date.getTime()} postBatch={series} />
       ))}

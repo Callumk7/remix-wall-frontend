@@ -1,3 +1,4 @@
+import { Button, Link } from "@/components/ui/button";
 import { UserData } from "../types";
 
 interface UserControlsProps {
@@ -6,20 +7,20 @@ interface UserControlsProps {
 export function UserControls({ user }: UserControlsProps) {
   if (!user) {
     return (
-      <div>
-        <form>
-          <button>Login</button>
-        </form>
-      </div>
+      <form>
+        <Link to={"/sign-in"}>Sign In</Link>
+      </form>
     );
   } else {
     return (
-      <div>
-        <form action="/sign-out" method="POST">
-          <button>Logout</button>
-        </form>
-        <div>Current User: {user.fullName}</div>
-      </div>
+        <div className="flex items-center gap-x-4">
+          <p>{user.userName}</p>
+          <form action="/sign-out" method="POST">
+            <Button variant={"secondary"} type="submit">
+              Sign Out
+            </Button>
+          </form>
+        </div>
     );
   }
 }

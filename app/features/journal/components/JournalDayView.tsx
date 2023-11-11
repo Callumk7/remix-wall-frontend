@@ -3,6 +3,7 @@ import { PostBatchByDate } from "../types";
 import { JournalTextPost } from "./JournalTextPost";
 import { useState } from "react";
 import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
+import { EditableTextPost } from "@/components/posts/EditablePost";
 
 interface JournalDayViewProps {
   postBatch: PostBatchByDate;
@@ -16,10 +17,10 @@ export function JournalDayView({ postBatch }: JournalDayViewProps) {
         {postBatch.date.toDateString()}
       </h1>
       {postBatch.posts.map((post) => (
-        <JournalTextPost key={post.id} post={post} />
+        <EditableTextPost key={post.id} post={post} />
       ))}
       {isCreating ? (
-        <CreatePostForm date={postBatch.date} />
+        <CreatePostForm date={postBatch.date} action="/posts" />
       ) : (
         <Button onPress={() => setIsCreating(true)}>Add Entry</Button>
       )}

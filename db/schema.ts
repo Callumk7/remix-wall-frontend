@@ -20,10 +20,10 @@ export const users = sqliteTable("users", {
 
 export const usersRelations = relations(users, ({ many }) => ({
 	posts: many(posts, {
-		relationName: "post_author",
+		relationName: "author",
 	}),
 	wallPosts: many(posts, {
-		relationName: "wall_user_id",
+		relationName: "wall_user",
 	}),
 	friends: many(userFriends, {
 		relationName: "friends",
@@ -80,7 +80,7 @@ export const posts = sqliteTable("posts", {
 		sql`CURRENT_TIMESTAMP`,
 	),
 	body: text("body").notNull(),
-	authorId: text("author_id").notNull(),
+	authorId: text("author_id").notNull().references(() => users.id),
 	inGroup: integer("in_group", { mode: "boolean" }).notNull().default(false),
 	groupId: text("group_id"),
 	onWall: integer("on_wall", { mode: "boolean" }).notNull().default(false),
@@ -94,7 +94,7 @@ export const postsRelations = relations(posts, ({ one }) => ({
 	author: one(users, {
 		fields: [posts.authorId],
 		references: [users.id],
-		relationName: "post_author",
+		relationName: "author",
 	}),
 	group: one(groups, {
 		fields: [posts.groupId],
@@ -103,7 +103,7 @@ export const postsRelations = relations(posts, ({ one }) => ({
 	wall: one(users, {
 		fields: [posts.wallUserId],
 		references: [users.id],
-		relationName: "post_wall_recipient",
+		relationName: "wall_user",
 	}),
 }));
 

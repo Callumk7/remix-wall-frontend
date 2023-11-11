@@ -2,6 +2,8 @@ import { db } from "db";
 import { users } from "./schema";
 import { uuidv4 } from "@/features/auth/uuidGenerator";
 
+// TODO: Complete seed script for filling the app with loads of data
+
 const seedUsers = [
 	{
 		id: uuidv4(),

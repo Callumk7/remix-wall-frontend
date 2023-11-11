@@ -14,11 +14,20 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 	switch (request.method) {
 		case "PATCH": {
-			const patchedPost = handlePATCH(request, postId);
+			const patchedPost = await handlePATCH(request, postId);
 
 			return json(
 				{ patchedPost },
 				{ status: 200, statusText: "Successfully created a new post" },
+			);
+		}
+
+		case "DELETE": {
+			const deletedPostResponse = await handleDELETE(postId);
+
+			return json(
+				{ deletedPostResponse },
+				{ status: 200, statusText: "Successfully deleted post" },
 			);
 		}
 
@@ -44,4 +53,9 @@ const handlePATCH = async (request: Request, postId: string) => {
 		.where(eq(posts.id, postId));
 
 	return updatedPost;
+};
+
+const handleDELETE = async (postId: string) => {
+	const deletedPost = await db.delete(posts).where(eq(posts.id, postId));
+	return deletedPost;
 };

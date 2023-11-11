@@ -1,3 +1,4 @@
+import { Link } from "@/components/ui/button";
 import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { db } from "db";
@@ -21,7 +22,9 @@ export default function Index() {
     <div className="mx-auto mt-10 w-4/5 text-center">
       <h1 className="text-5xl font-bold">Lets get Started</h1>
       {data.map((user) => (
-        <div key={user.id}>a user id: {user.id}</div>
+        <Link variant={"link"} to={`/wall/${user.id}`} key={user.id}>
+          a user id: {user.id}
+        </Link>
       ))}
     </div>
   );
