@@ -7,6 +7,10 @@ import { Dispatch, SetStateAction } from "react";
 
 const links = [
   {
+    name: "Feed",
+    to: "/feed"
+  },
+  {
     name: "Wall",
     to: "/wall",
   },
@@ -17,6 +21,10 @@ const links = [
   {
     name: "Profile",
     to: "/profile",
+  },
+  {
+    name: "Friends",
+    to: "/friends",
   },
   {
     name: "Dev Feed",

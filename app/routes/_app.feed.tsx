@@ -3,7 +3,7 @@ import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
 import { TextPost } from "@/features/posts/components/TextPost";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { db } from "db";
-import { posts } from "db/schema";
+import { PostWithAuthor, PostWithAuthorAndComments, posts } from "db/schema";
 import { desc } from "drizzle-orm";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 
@@ -15,10 +15,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const allPosts = await db.query.posts.findMany({
     with: {
-      author: true,
+      comments: true,
+      author: {
+        with: {
+          profiles: true
+        }
+      },
     },
     orderBy: [desc(posts.createdAt)],
-  });
+  }) as PostWithAuthorAndComments[];
 
   return typedjson({ session, allPosts });
 };
@@ -27,12 +32,6 @@ export default function WallPage() {
   const { session, allPosts } = useTypedLoaderData<typeof loader>();
   return (
     <div className="mx-auto mt-10 w-1/2">
-      <h1 className="text-[76px] font-extrabold">
-        <span className="underline decoration-ruby9">
-          {session.fullName}&apos;s Feed
-        </span>
-        .
-      </h1>
       <CreatePostForm date={new Date()} />
       <div className="flex flex-col gap-3">
         {allPosts.map((post) => (

@@ -24,6 +24,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	posts: many(posts, {
 		relationName: "author",
 	}),
+	comments: many(comments),
 	wallPosts: many(posts, {
 		relationName: "wall_user",
 	}),
@@ -136,6 +137,7 @@ export const comments = sqliteTable("comments", {
 	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
 	postId: text("post_id").notNull(),
 	authorId: text("author_id").notNull(),
+	body: text("body").notNull()
 });
 
 export const commentsRelations = relations(comments, ({one, many}) => ({
@@ -143,6 +145,10 @@ export const commentsRelations = relations(comments, ({one, many}) => ({
 		fields: [comments.postId],
 		references: [posts.id]
 	}),
+	author: one(users, {
+		fields: [comments.authorId],
+		references: [users.id]
+	})
 }))
 
 //
@@ -182,12 +188,18 @@ export type Post = typeof posts.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type Group = typeof groups.$inferSelect;
-
-export interface UserWIthProfile extends User {
-	profiles: Profile;
-}
+export type Comment = typeof comments.$inferSelect;
 
 // Created Types:
+export interface UserWithProfile extends User {
+	profiles: Profile;
+}
 export interface PostWithAuthor extends Post {
-	author: UserWIthProfile;
+	author: UserWithProfile;
+}
+export interface PostWithComments extends Post {
+	comments: Comment[]
+}
+export interface PostWithAuthorAndComments extends PostWithAuthor {
+	comments: Comment[]
 }
