@@ -1,6 +1,5 @@
 import { Container } from "@/components/Container";
 import { auth } from "@/features/auth/helper";
-import { TextPost } from "@/features/posts/components/TextPost";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { db } from "db";

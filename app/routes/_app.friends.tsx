@@ -1,7 +1,3 @@
-// This page is going to be used for viewing all users and adding them to your friends list.
-// This is probably a temporary measure, Right now it is just to make sure I have the drizzleORM logic setup properly.
-// Ultimately there should be a separate friends viewing page and friends search page.
-
 import { auth } from "@/features/auth/helper";
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";

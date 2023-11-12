@@ -7,7 +7,7 @@ import { getDayOfYear } from "@/features/posts/util";
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Form, useLoaderData, useParams } from "@remix-run/react";
 import { db } from "db";
-import { posts } from "db/schema";
+import { posts, users } from "db/schema";
 import { eq } from "drizzle-orm";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 
@@ -36,36 +36,42 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     wallUserId: wallUserId,
   });
 
-  return json({postToWall});
+  return json({ postToWall });
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const session = await auth(request);
   const wallUserId = params.userId;
 
+  // get user data
+  const userData = await db.query.users.findFirst({
+    where: eq(users.id, params.userId!)
+  })
+
   // get all posts for the user
   const allPosts = await db.query.posts.findMany({
     where: eq(posts.wallUserId, wallUserId!),
     with: {
-      author: true
-    }
-  })
+      author: true,
+    },
+  });
 
-  return typedjson({ session, allPosts });
+  return typedjson({ session, allPosts, userData });
 };
 
 export default function UserWallView() {
-  const { session, allPosts } = useTypedLoaderData<typeof loader>();
+  const { session, allPosts, userData } = useTypedLoaderData<typeof loader>();
   const params = useParams();
   const userId = params.userId;
   return (
     <div>
+      <h1 className="text-xl font-bold">{userData?.userName}'s feed</h1>
       <CreatePostForm />
       <div>
-        {allPosts.map(post => (
+        {allPosts.map((post) => (
           <TextPost key={post.id} post={post} />
         ))}
       </div>
     </div>
-  )
+  );
 }
