@@ -67,9 +67,12 @@ export function JournalTextPost({ post }: JournalTextPostProps) {
       ) : (
         <div
           className="prose"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked(content)) }}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(marked(content)),
+          }}
         ></div>
       )}
+      <div>This is some text</div>
     </div>
   );
 }

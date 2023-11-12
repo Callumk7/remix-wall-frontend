@@ -14,7 +14,7 @@ export function UserControls({ user }: UserControlsProps) {
   } else {
     return (
         <div className="flex items-center gap-x-4">
-          <p>{user.userName}</p>
+          <p>{user.email}</p>
           <form action="/sign-out" method="POST">
             <Button variant={"secondary"} type="submit">
               Sign Out

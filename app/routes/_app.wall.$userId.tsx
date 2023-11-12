@@ -45,14 +45,21 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   // get user data
   const userData = await db.query.users.findFirst({
-    where: eq(users.id, params.userId!)
+    where: eq(users.id, params.userId!),
+    with: {
+      profiles: true
+    }
   })
 
   // get all posts for the user
   const allPosts = await db.query.posts.findMany({
     where: eq(posts.wallUserId, wallUserId!),
     with: {
-      author: true,
+      author: {
+        with: {
+          profiles: true
+        }
+      }
     },
   });
 
@@ -65,7 +72,7 @@ export default function UserWallView() {
   const userId = params.userId;
   return (
     <div>
-      <h1 className="text-xl font-bold">{userData?.userName}'s feed</h1>
+      <h1 className="text-xl font-bold">{userData.email}'s feed</h1>
       <CreatePostForm />
       <div>
         {allPosts.map((post) => (

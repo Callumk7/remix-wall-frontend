@@ -12,13 +12,15 @@ import {
 // USER TABLES AND RELATIONS
 export const users = sqliteTable("users", {
 	id: text("id").primaryKey(),
-	fullName: text("full_name"),
-	userName: text("user_name").notNull(),
 	email: text("email").notNull(),
 	password: text("password").notNull(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
+	profiles: one(profiles, {
+		fields: [users.id],
+		references: [profiles.userId],
+	}),
 	posts: many(posts, {
 		relationName: "author",
 	}),
@@ -58,6 +60,19 @@ export const userFriendsRelations = relations(userFriends, ({ one }) => ({
 	}),
 }));
 
+export const profiles = sqliteTable("profiles", {
+	id: text("id").primaryKey(),
+	userId: text("user_id"),
+	firstName: text("first_name").notNull(),
+	lastName: text("last_name").notNull(),
+	userName: text("user_name").notNull(),
+	profilePictureUrl: text("profile_picture_url"),
+	bio: text("bio"),
+	dateOfBirth: integer("date_of_birth", { mode: "timestamp" }).default(
+		sql`0`,
+	),
+});
+
 //
 //
 //
@@ -80,7 +95,9 @@ export const posts = sqliteTable("posts", {
 		sql`CURRENT_TIMESTAMP`,
 	),
 	body: text("body").notNull(),
-	authorId: text("author_id").notNull().references(() => users.id),
+	authorId: text("author_id")
+		.notNull()
+		.references(() => users.id),
 	inGroup: integer("in_group", { mode: "boolean" }).notNull().default(false),
 	groupId: text("group_id"),
 	onWall: integer("on_wall", { mode: "boolean" }).notNull().default(false),
@@ -90,7 +107,7 @@ export const posts = sqliteTable("posts", {
 		.default(false),
 });
 
-export const postsRelations = relations(posts, ({ one }) => ({
+export const postsRelations = relations(posts, ({ one, many }) => ({
 	author: one(users, {
 		fields: [posts.authorId],
 		references: [users.id],
@@ -105,7 +122,28 @@ export const postsRelations = relations(posts, ({ one }) => ({
 		references: [users.id],
 		relationName: "wall_user",
 	}),
+	comments: many(comments),
 }));
+
+export const comments = sqliteTable("comments", {
+	id: text("id").primaryKey(),
+	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
+	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
+	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
+	postId: text("post_id").notNull(),
+	authorId: text("author_id").notNull(),
+});
+
+export const commentsRelations = relations(comments, ({one, many}) => ({
+	post: one(posts, {
+		fields: [comments.postId],
+		references: [posts.id]
+	}),
+}))
 
 //
 //
@@ -142,9 +180,14 @@ export const usersToGroups = sqliteTable(
 // Generated Types:
 export type Post = typeof posts.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type Profile = typeof profiles.$inferSelect;
 export type Group = typeof groups.$inferSelect;
+
+export interface UserWIthProfile extends User {
+	profiles: Profile;
+}
 
 // Created Types:
 export interface PostWithAuthor extends Post {
-	author: User;
+	author: UserWIthProfile;
 }

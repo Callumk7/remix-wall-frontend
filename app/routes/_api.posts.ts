@@ -4,7 +4,6 @@ import { getDayOfYear } from "@/features/posts/util";
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { db } from "db";
 import { posts } from "db/schema";
-import { eq } from "drizzle-orm";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const session = await auth(request);

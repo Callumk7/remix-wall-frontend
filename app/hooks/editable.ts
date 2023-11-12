@@ -1,4 +1,4 @@
-import { useFetcher } from "@remix-run/react";
+import { FetcherWithComponents, useFetcher } from "@remix-run/react";
 import { Post } from "db/schema";
 import { useEffect, useRef, useState } from "react";
 
@@ -9,8 +9,6 @@ export const useEditable = (post: Post) => {
 	const formRef = useRef<HTMLFormElement | null>(null);
 	const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-	const fetcher = useFetcher();
-
 	useEffect(() => {
 		if (isEditing && textAreaRef.current) {
 			textAreaRef.current.focus();
@@ -18,7 +16,7 @@ export const useEditable = (post: Post) => {
 		}
 	}, [isEditing]);
 
-	const handleBlur = () => {
+	const handleBlur = (fetcher: FetcherWithComponents<unknown>) => {
 		fetcher.submit(formRef.current, {
 			method: "PATCH",
 		});
@@ -42,6 +40,6 @@ export const useEditable = (post: Post) => {
 		textAreaRef,
 		handleBlur,
 		handleKeyDown,
-		setContent
-	}
+		setContent,
+	};
 };

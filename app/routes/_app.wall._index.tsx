@@ -16,11 +16,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const wallPosts = await db.query.posts.findMany({
     where: eq(posts.wallUserId, session.id),
     with: {
-      author: true,
+      author: {
+        with: {
+          profiles: true,
+        },
+      },
     },
   });
-
-  console.log(wallPosts);
 
   return json({ session, wallPosts });
 };
@@ -30,9 +32,7 @@ export default function WallIndex() {
   return (
     <div>
       {wallPosts.length !== 0
-        ? wallPosts.map((post) => (
-            <TextPost key={post.id} post={post} />
-          ))
+        ? wallPosts.map((post) => <TextPost key={post.id} post={post} />)
         : "No posts found on this wall"}
     </div>
   );

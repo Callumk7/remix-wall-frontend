@@ -25,6 +25,17 @@ CREATE TABLE `posts` (
 	FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
+CREATE TABLE `profiles` (
+	`id` text PRIMARY KEY NOT NULL,
+	`user_id` text,
+	`first_name` text NOT NULL,
+	`last_name` text NOT NULL,
+	`user_name` text NOT NULL,
+	`profile_picture_url` text,
+	`bio` text,
+	`date_of_birth` integer DEFAULT 0
+);
+--> statement-breakpoint
 CREATE TABLE `user_friends` (
 	`user_id` text NOT NULL,
 	`friend_id` text NOT NULL,
@@ -33,8 +44,6 @@ CREATE TABLE `user_friends` (
 --> statement-breakpoint
 CREATE TABLE `users` (
 	`id` text PRIMARY KEY NOT NULL,
-	`full_name` text,
-	`user_name` text NOT NULL,
 	`email` text NOT NULL,
 	`password` text NOT NULL
 );

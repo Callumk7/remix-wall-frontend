@@ -53,7 +53,7 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
         <Form method="PATCH" action={`/posts/${post.id}`} ref={formRef}>
           <TextArea
             ref={textAreaRef}
-            onBlur={handleBlur}
+            onBlur={() => handleBlur(fetcher)}
             onKeyDown={handleKeyDown}
             onChange={(value) => setContent(value)}
             value={content}
@@ -61,12 +61,20 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
           />
         </Form>
       ) : (
-        <div
-          className="prose"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(marked(content)),
-          }}
-        ></div>
+        <div className="flex flex-col gap-y-1">
+          {post.onWall && (
+            <p className="text-sm font-light text-mauve8">
+              This was posted on{" "}
+              <span className="text-ruby8">{post.wallUserId}</span>'s wall
+            </p>
+          )}
+          <div
+            className="prose"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(marked(content)),
+            }}
+          ></div>
+        </div>
       )}
     </div>
   );
