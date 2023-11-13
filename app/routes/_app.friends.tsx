@@ -15,10 +15,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const allFriends = await db.query.userFriends.findMany({
     where: eq(userFriends.userId, session.id),
     with: {
-      friendId: {
+      friend: {
         with: {
-          friends: true,
-        },
+          profile: true
+        }
       },
     },
   });
@@ -33,6 +33,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const userId = form.get("userId")?.toString();
   const friendId = form.get("friendId")?.toString();
+
+  console.log(userId);
+  console.log(friendId);
 
   invariant(userId, "User ID required.");
   invariant(friendId, "Friend ID required.");
@@ -62,7 +65,7 @@ export default function FriendsPage() {
         <div className="grid grid-cols-5">
           <div className="col-span-1">
             {allFriends.map((friend) => (
-              <div key={friend.friendId}>{friend.friendId.fullName}</div>
+              <div key={friend.friendId}>{friend.friend.profile.userName}</div>
             ))}
           </div>
           <div className="col-span-4 grid grid-cols-2 gap-3">
@@ -71,8 +74,6 @@ export default function FriendsPage() {
                 key={user.id}
                 className="w-lg relative flex flex-col gap-1 border p-3 hover:bg-slate-100"
               >
-                <p>{user.userName}</p>
-                <p>{user.fullName}</p>
                 <p>{user.email}</p>
                 <form
                   action=""

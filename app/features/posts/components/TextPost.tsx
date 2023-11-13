@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { TextArea } from "@/components/ui/forms";
 import { Link, useFetcher } from "@remix-run/react";
-import { PostWithAuthorAndComments } from "db/schema";
-import DOMPurify from 'isomorphic-dompurify';
+import { PostWithAuthorCommentsRecipient } from "db/schema";
+import DOMPurify from "isomorphic-dompurify";
 import { marked } from "marked";
 import { useState } from "react";
 
 interface TextPostProps {
-  post: PostWithAuthorAndComments;
+  post: PostWithAuthorCommentsRecipient;
 }
 
 export function TextPost({ post }: TextPostProps) {
@@ -23,12 +23,22 @@ export function TextPost({ post }: TextPostProps) {
       }`}
     >
       <p className="text-sm font-light text-mauve8">{date}</p>
-      <Link
-        to={`/wall/${post.authorId}`}
-        className="font-bold text-ruby9 underline"
-      >
-        {post.author.profiles.userName}
-      </Link>
+      <div className="flex items-center gap-x-3">
+        <Link
+          to={`/wall/${post.authorId}`}
+          className="font-bold text-ruby9 underline"
+        >
+          {post.author.profile.userName}
+        </Link>
+        {post.wall !== null && (
+          <>
+            <span className="text-sm text-mauve10">posted on</span>
+            <Link className="font-bold text-ruby9 underline" to={`/wall/${post.wall.id}`}>
+              {post.wall.profile.userName}'s Wall
+            </Link>
+          </>
+        )}
+      </div>
       <div
         className="prose prose-sm min-w-full"
         dangerouslySetInnerHTML={{

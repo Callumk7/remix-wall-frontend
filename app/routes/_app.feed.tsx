@@ -3,7 +3,7 @@ import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
 import { TextPost } from "@/features/posts/components/TextPost";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { db } from "db";
-import { PostWithAuthor, PostWithAuthorAndComments, posts } from "db/schema";
+import { PostWithAuthor, PostWithAuthorAndComments, PostWithAuthorCommentsRecipient, posts } from "db/schema";
 import { desc } from "drizzle-orm";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 
@@ -18,12 +18,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       comments: true,
       author: {
         with: {
-          profiles: true
+          profile: true
         }
       },
+      wall: {
+        with: {
+          profile: true
+        }
+      }
     },
     orderBy: [desc(posts.createdAt)],
-  }) as PostWithAuthorAndComments[];
+  }) as PostWithAuthorCommentsRecipient[];
+
+  console.log(JSON.stringify(allPosts, null, 2))
 
   return typedjson({ session, allPosts });
 };

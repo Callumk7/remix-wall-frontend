@@ -47,7 +47,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const userData = await db.query.users.findFirst({
     where: eq(users.id, params.userId!),
     with: {
-      profiles: true,
+      profile: true,
     },
   }) as UserWithProfile;
 
@@ -60,7 +60,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       comments: true,
       author: {
         with: {
-          profiles: true,
+          profile: true,
         },
       },
     },
@@ -75,7 +75,7 @@ export default function UserWallView() {
     <div className="grid grid-cols-6">
       <div className="col-span-4">
         <h1 className="text-xl font-bold">
-          {userData?.profiles.userName}&apos;s feed
+          {userData?.profile.userName}&apos;s feed
         </h1>
         <CreatePostForm />
         <div>

@@ -20,14 +20,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         with: {
           author: {
             with: {
-              profiles: true,
+              profile: true,
             },
           },
         },
       },
       author: {
         with: {
-          profiles: true,
+          profile: true,
         },
       },
     },

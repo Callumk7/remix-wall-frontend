@@ -17,7 +17,7 @@ export const users = sqliteTable("users", {
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({
-	profiles: one(profiles, {
+	profile: one(profiles, {
 		fields: [users.id],
 		references: [profiles.userId],
 	}),
@@ -49,12 +49,12 @@ export const userFriends = sqliteTable(
 );
 
 export const userFriendsRelations = relations(userFriends, ({ one }) => ({
-	userId: one(users, {
+	user: one(users, {
 		fields: [userFriends.userId],
 		references: [users.id],
 		relationName: "friends",
 	}),
-	friendId: one(users, {
+	friend: one(users, {
 		fields: [userFriends.friendId],
 		references: [users.id],
 		relationName: "friends_of",
@@ -192,7 +192,7 @@ export type Comment = typeof comments.$inferSelect;
 
 // Created Types:
 export interface UserWithProfile extends User {
-	profiles: Profile;
+	profile: Profile;
 }
 export interface PostWithAuthor extends Post {
 	author: UserWithProfile;
@@ -202,4 +202,8 @@ export interface PostWithComments extends Post {
 }
 export interface PostWithAuthorAndComments extends PostWithAuthor {
 	comments: Comment[];
+}
+
+export interface PostWithAuthorCommentsRecipient extends PostWithAuthorAndComments {
+	wall: UserWithProfile;
 }
