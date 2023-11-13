@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { TextArea } from "@/components/ui/forms";
-import { Form, Link, useFetcher } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import { PostWithAuthorAndComments } from "db/schema";
-import DOMPurify from "dompurify";
+import DOMPurify from 'isomorphic-dompurify';
 import { marked } from "marked";
 import { useState } from "react";
 
@@ -14,6 +14,8 @@ export function TextPost({ post }: TextPostProps) {
   const [isCommenting, setIsCommenting] = useState(false);
   const fetcher = useFetcher();
   const date = new Date(String(post.createdAt)).toDateString();
+
+  const htmlContent = DOMPurify.sanitize(marked(post.body!));
   return (
     <div
       className={`group relative flex flex-col gap-y-2 rounded-md border p-3 ${
@@ -30,7 +32,7 @@ export function TextPost({ post }: TextPostProps) {
       <div
         className="prose prose-sm min-w-full"
         dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(marked(post.body!)),
+          __html: htmlContent,
         }}
       ></div>
       {isCommenting ? (

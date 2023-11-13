@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
 import { PostBatchByDate } from "../types";
 import { getDayOfYear } from "@/features/posts/util";
+import { getDaysSinceUnixEpoch } from "@/util/date-utilities";
 
 // TODO: I should make a card component with a shared card style (like this component has)
 
@@ -19,7 +20,7 @@ export function JournalPageCard({ postBatch }: JournalPageCard) {
 
   return (
     <Link
-      to={`/journal/${postBatch.date.getTime()}`}
+      to={`/journal/${getDaysSinceUnixEpoch(postBatch.date)}`}
       className="h-80 overflow-clip rounded-md border p-3 hover:bg-mauve3"
     >
       <h3 className="text-lg font-bold">{cardHeaderText}</h3>

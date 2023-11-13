@@ -45,7 +45,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     },
   });
 
-  return json({ session });
+  return json({ session, postData });
 };
 
 export default function PostPage() {

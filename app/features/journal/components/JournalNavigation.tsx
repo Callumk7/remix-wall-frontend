@@ -5,8 +5,6 @@ import {
 } from "@radix-ui/react-icons";
 import { useParams } from "@remix-run/react";
 
-const dayInMilliseconds = 24 * 60 * 60 * 1000;
-
 export function JournalNavigation() {
   const params = useParams();
   return (
@@ -14,14 +12,14 @@ export function JournalNavigation() {
       <Link
         size={"icon"}
         variant={"link"}
-        to={`/journal/${Number(params.day) - dayInMilliseconds}`}
+        to={`/journal/${Number(params.day) - 1}`}
       >
         <DoubleArrowLeftIcon />
       </Link>
       <Link
         size={"icon"}
         variant={"link"}
-        to={`/journal/${Number(params.day) + dayInMilliseconds}`}
+        to={`/journal/${Number(params.day) + 1}`}
       >
         <DoubleArrowRightIcon />
       </Link>

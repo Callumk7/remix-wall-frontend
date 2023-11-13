@@ -57,6 +57,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const allPosts = await db.query.posts.findMany({
     where: eq(posts.wallUserId, wallUserId!),
     with: {
+      comments: true,
       author: {
         with: {
           profiles: true,

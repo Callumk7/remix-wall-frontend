@@ -137,19 +137,19 @@ export const comments = sqliteTable("comments", {
 	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
 	postId: text("post_id").notNull(),
 	authorId: text("author_id").notNull(),
-	body: text("body").notNull()
+	body: text("body").notNull(),
 });
 
-export const commentsRelations = relations(comments, ({one, many}) => ({
+export const commentsRelations = relations(comments, ({ one }) => ({
 	post: one(posts, {
 		fields: [comments.postId],
-		references: [posts.id]
+		references: [posts.id],
 	}),
 	author: one(users, {
 		fields: [comments.authorId],
-		references: [users.id]
-	})
-}))
+		references: [users.id],
+	}),
+}));
 
 //
 //
@@ -198,8 +198,8 @@ export interface PostWithAuthor extends Post {
 	author: UserWithProfile;
 }
 export interface PostWithComments extends Post {
-	comments: Comment[]
+	comments: Comment[];
 }
 export interface PostWithAuthorAndComments extends PostWithAuthor {
-	comments: Comment[]
+	comments: Comment[];
 }

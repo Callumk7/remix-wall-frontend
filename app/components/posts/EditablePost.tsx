@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
+import { DiscIcon, Pencil1Icon, PinRightIcon, TrashIcon } from "@radix-ui/react-icons";
 import { Form, useFetcher, useParams } from "@remix-run/react";
 import { Post } from "db/schema";
 import { marked } from "marked";
-import DOMPurify from "dompurify";
+import DOMPurify from 'isomorphic-dompurify';
 import { TextArea } from "@/components/ui/forms";
 import { useEditable } from "@/hooks/editable";
 
@@ -14,6 +14,7 @@ interface EditableTextPostProps {
   post: Post;
 }
 export function EditableTextPost({ post }: EditableTextPostProps) {
+  // TODO: This hook.. I think it needs some cleaning up.
   const {
     isEditing,
     setIsEditing,
@@ -27,10 +28,14 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
 
   const fetcher = useFetcher();
   const isDeleting = fetcher.state !== "idle";
+  const htmlContent = DOMPurify.sanitize(marked(post.body!));
 
   return (
     <div className="group relative flex flex-col gap-2 border-b border-mauve4 p-3">
       <div className="absolute right-3 top-3 flex gap-x-2 opacity-0 transition-opacity delay-200 ease-in group-hover:opacity-100">
+        <Button size={"icon"}>
+          <DiscIcon />
+        </Button>
         <Button size={"icon"} onPress={() => setIsEditing(true)}>
           <Pencil1Icon />
         </Button>
@@ -71,7 +76,7 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
           <div
             className="prose"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(marked(content)),
+              __html: htmlContent,
             }}
           ></div>
         </div>

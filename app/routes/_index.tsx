@@ -12,7 +12,6 @@ export const meta: MetaFunction = () => {
 
 export const loader = async () => {
   const data = await db.query.users.findMany();
-  console.log(data[0].id);
   return json({ data });
 };
 

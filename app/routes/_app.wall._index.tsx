@@ -7,7 +7,7 @@ import { TextPost } from "@/features/posts/components/TextPost";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { db } from "db";
-import { posts, users } from "db/schema";
+import { posts, profiles, users } from "db/schema";
 import { eq } from "drizzle-orm";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -16,6 +16,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const wallPosts = await db.query.posts.findMany({
     where: eq(posts.wallUserId, session.id),
     with: {
+      comments: {
+        with: {
+          author: {
+            with: {
+              profiles: true,
+            },
+          },
+        },
+      },
       author: {
         with: {
           profiles: true,
