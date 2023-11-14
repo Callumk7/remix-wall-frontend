@@ -11,7 +11,7 @@ export function AuthorRow({ author, wallRecipient }: AuthorRowProps) {
     <div className="flex items-center gap-x-3">
       <Link
         to={`/wall/${author.id}`}
-        className="font-bold text-ruby9 underline"
+        className="font-bold text-ruby9 hover:underline"
       >
         {author.profile.userName}
       </Link>

@@ -15,7 +15,7 @@ const Popover = forwardRef<HTMLElement, PopoverProps>(({ className, ...props }, 
     <AriaPopover
       className={clsx(
         className,
-        "w-56 origin-top-left overflow-auto rounded-md bg-background p-1 shadow-lg ring-1 ring-black ring-opacity-5 fill-mode-forwards entering:animate-in entering:fade-in entering:zoom-in-95 exiting:animate-out exiting:fade-out exiting:zoom-out-95",
+        "w-56 origin-top-left overflow-auto rounded-md bg-mauve1 p-1 shadow-lg shadow-blackA3 ring-1 ring-black ring-opacity-5 fill-mode-forwards entering:animate-in entering:fade-in entering:zoom-in-95 exiting:animate-out exiting:fade-out exiting:zoom-out-95",
       )}
       ref={ref}
       {...props}
@@ -36,7 +36,7 @@ const MenuItem = forwardRef<HTMLElement, ItemProps>(({ className, ...props }, re
     <AriaItem
       className={clsx(
         className,
-        "group box-border flex w-full cursor-default items-center rounded-md px-3 py-2 text-gray-900 outline-none focus:bg-violet-500 focus:text-white",
+        "group box-border flex w-full cursor-default items-center rounded-md px-3 py-2 text-gray-900 outline-none focus:bg-ruby9 focus:text-white",
       )}
       ref={ref}
       {...props}
