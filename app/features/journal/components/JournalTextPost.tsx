@@ -7,6 +7,14 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { TextArea } from "@/components/ui/forms";
 
+/**
+ * This component is used for displaying and editing journal entries, Post entities
+ * which have isJournalEntry === true.
+ * Journal entries are displayed differently to other posts, in that they can be 
+ * shared as posts, but do not generally appear anywhere else other than on a 
+ * user's journal page.
+ * */
+
 interface JournalTextPostProps {
   post: Post;
 }

@@ -41,7 +41,14 @@ export default function WallIndex() {
   return (
     <div>
       {wallPosts.length !== 0
-        ? wallPosts.map((post) => <TextPost key={post.id} post={post} />)
+        ? wallPosts.map((post) => (
+            <TextPost
+              key={post.id}
+              author={post.author}
+              post={post}
+              comments={post.comments}
+            />
+          ))
         : "No posts found on this wall"}
     </div>
   );

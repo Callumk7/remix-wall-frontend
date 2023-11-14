@@ -16,8 +16,6 @@ export function JournalPageCard({ postBatch }: JournalPageCard) {
     "-" +
     postBatch.date.getFullYear();
 
-  const day = getDayOfYear(postBatch.date);
-
   return (
     <Link
       to={`/journal/${getDaysSinceUnixEpoch(postBatch.date)}`}

@@ -8,6 +8,20 @@
       "when": 1699891853999,
       "tag": "0000_panoramic_vermin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1699899835277,
+      "tag": "0001_slippery_spiral",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1699960036404,
+      "tag": "0002_wooden_darkstar",
+      "breakpoints": true
     }
   ]
 }

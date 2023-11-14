@@ -3,6 +3,7 @@ import {
 	integer,
 	primaryKey,
 	sqliteTable,
+	sqliteView,
 	text,
 } from "drizzle-orm/sqlite-core";
 
@@ -77,6 +78,37 @@ export const profiles = sqliteTable("profiles", {
 //
 //
 //
+// GROUP TABLES AND RELATIONS
+export const groups = sqliteTable("groups", {
+	id: text("id").primaryKey(),
+	createdAt: integer("created_at").default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: integer("updated_at").default(sql`CURRENT_TIMESTAMP`),
+	name: text("name").notNull(),
+	description: text("description"),
+});
+export const groupsRelations = relations(groups, ({ many }) => ({
+	members: many(usersToGroups),
+	posts: many(posts),
+}));
+
+export const usersToGroups = sqliteTable(
+	"users_to_groups",
+	{
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id),
+		groupId: text("group_id")
+			.notNull()
+			.references(() => groups.id),
+	},
+	(t) => ({
+		pk: primaryKey(t.userId, t.groupId),
+	}),
+);
+
+//
+//
+//
 // POST TABLES AND RELATIONS
 export const posts = sqliteTable("posts", {
 	id: text("id").primaryKey(),
@@ -106,6 +138,10 @@ export const posts = sqliteTable("posts", {
 	isPrivate: integer("is_private", { mode: "boolean" })
 		.notNull()
 		.default(false),
+	isJournalEntry: integer("is_journal_entry", { mode: "boolean" })
+		.notNull()
+		.default(false),
+	likes: integer("likes").default(0),
 });
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
@@ -151,38 +187,6 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 	}),
 }));
 
-//
-//
-//
-// GROUP TABLES AND RELATIONS
-export const groups = sqliteTable("groups", {
-	id: text("id").primaryKey(),
-	createdAt: integer("created_at").default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: integer("updated_at").default(sql`CURRENT_TIMESTAMP`),
-	name: text("name").notNull(),
-	description: text("description"),
-});
-
-export const groupsRelations = relations(groups, ({ many }) => ({
-	members: many(usersToGroups),
-	posts: many(posts),
-}));
-
-export const usersToGroups = sqliteTable(
-	"users_to_groups",
-	{
-		userId: text("user_id")
-			.notNull()
-			.references(() => users.id),
-		groupId: text("group_id")
-			.notNull()
-			.references(() => groups.id),
-	},
-	(t) => ({
-		pk: primaryKey(t.userId, t.groupId),
-	}),
-);
-
 // Generated Types:
 export type Post = typeof posts.$inferSelect;
 export type User = typeof users.$inferSelect;
@@ -204,6 +208,20 @@ export interface PostWithAuthorAndComments extends PostWithAuthor {
 	comments: Comment[];
 }
 
-export interface PostWithAuthorCommentsRecipient extends PostWithAuthorAndComments {
+export interface CommentWithAuthor extends Comment {
+	author: UserWithProfile;
+}
+
+export interface PostWithAuthorAndCommentsWithAuthor extends PostWithAuthor {
+	comments: CommentWithAuthor[];
+}
+
+export interface PostWithAuthorCommentsRecipient
+	extends PostWithAuthorAndComments {
+	wall: UserWithProfile;
+}
+
+export interface PostAndCommentsWithAuthorsAndRecipient
+	extends PostWithAuthorAndCommentsWithAuthor {
 	wall: UserWithProfile;
 }

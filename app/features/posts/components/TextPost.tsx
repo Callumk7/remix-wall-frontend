@@ -1,50 +1,37 @@
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { TextArea } from "@/components/ui/forms";
-import { Link, useFetcher } from "@remix-run/react";
-import { PostWithAuthorCommentsRecipient } from "db/schema";
-import DOMPurify from "isomorphic-dompurify";
-import { marked } from "marked";
+import { useFetcher } from "@remix-run/react";
+import { PostWithAuthorAndComments, Comment, UserWithProfile, CommentWithAuthor } from "db/schema";
 import { useState } from "react";
+import { AuthorRow } from "./AuthorRow";
+import { PostBody } from "./PostBody";
+import { HeartIcon } from "@radix-ui/react-icons";
+import { CommentCard } from "./Comment";
 
 interface TextPostProps {
-  post: PostWithAuthorCommentsRecipient;
+  author: UserWithProfile;
+  post: PostWithAuthorAndComments;
+  comments: CommentWithAuthor[];
+  recipient?: UserWithProfile;
 }
 
-export function TextPost({ post }: TextPostProps) {
+export function TextPost({ author, post, comments, recipient }: TextPostProps) {
   const [isCommenting, setIsCommenting] = useState(false);
   const fetcher = useFetcher();
+
+  // TODO: more rogue date stuff
   const date = new Date(String(post.createdAt)).toDateString();
 
-  const htmlContent = DOMPurify.sanitize(marked(post.body!));
   return (
-    <div
-      className={`group relative flex flex-col gap-y-2 rounded-md border p-3 ${
-        post.isPrivate ? "bg-ruby4" : ""
-      }`}
-    >
+    <Card className="group relative">
+      <Button size={"icon"} variant="secondary" className="absolute top-3 right-3">
+        <HeartIcon />
+      </Button>
+      {/*This should be a link to the correct date in the journal? at least when we sort out dates*/}
       <p className="text-sm font-light text-mauve8">{date}</p>
-      <div className="flex items-center gap-x-3">
-        <Link
-          to={`/wall/${post.authorId}`}
-          className="font-bold text-ruby9 underline"
-        >
-          {post.author.profile.userName}
-        </Link>
-        {post.wall !== null && (
-          <>
-            <span className="text-sm text-mauve10">posted on</span>
-            <Link className="font-bold text-ruby9 underline" to={`/wall/${post.wall.id}`}>
-              {post.wall.profile.userName}'s Wall
-            </Link>
-          </>
-        )}
-      </div>
-      <div
-        className="prose prose-sm min-w-full"
-        dangerouslySetInnerHTML={{
-          __html: htmlContent,
-        }}
-      ></div>
+      <AuthorRow author={author} wallRecipient={recipient} />
+      <PostBody body={post.body} />
       {isCommenting ? (
         <fetcher.Form
           className="flex flex-col gap-y-1"
@@ -62,13 +49,13 @@ export function TextPost({ post }: TextPostProps) {
           Comment
         </Button>
       )}
-      {post.comments.length > 0 && (
+      {comments && (
         <div>
-          {post.comments.map((comment) => (
-            <div key={comment.id}>{comment.body}</div>
+          {comments.map((comment) => (
+            <CommentCard key={comment.id} comment={comment} />
           ))}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

@@ -25,13 +25,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function JournalIndex() {
   const { session, allPostsByDate } = useTypedLoaderData<typeof loader>();
-  // This should return the current day, and -1 day
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <>
       <CreatePostForm action="/posts" />
-      {allPostsByDate.map((series) => (
-        <JournalPageCard key={series.date.getTime()} postBatch={series} />
-      ))}
-    </div>
+      <div className="grid grid-cols-3 gap-4">
+        {allPostsByDate.map((series) => (
+          <JournalPageCard key={series.date.getTime()} postBatch={series} />
+        ))}
+      </div>
+    </>
   );
 }

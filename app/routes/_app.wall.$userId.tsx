@@ -44,12 +44,12 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const wallUserId = params.userId;
 
   // get user data
-  const userData = await db.query.users.findFirst({
+  const userData = (await db.query.users.findFirst({
     where: eq(users.id, params.userId!),
     with: {
       profile: true,
     },
-  }) as UserWithProfile;
+  })) as UserWithProfile;
 
   // TODO: Need to use zod or something to ensure that the shape of the user matches what is required for the components below. I own the data though, so I think it should be ok. The logic for this should be examined from start to finish to see what the risk is
 
@@ -57,7 +57,15 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const allPosts = await db.query.posts.findMany({
     where: eq(posts.wallUserId, wallUserId!),
     with: {
-      comments: true,
+      comments: {
+        with: {
+          author: {
+            with: {
+              profile: true
+            }
+          }
+        }
+      },
       author: {
         with: {
           profile: true,
@@ -80,7 +88,12 @@ export default function UserWallView() {
         <CreatePostForm />
         <div>
           {allPosts.map((post) => (
-            <TextPost key={post.id} post={post} />
+            <TextPost
+              key={post.id}
+              post={post}
+              comments={post.comments}
+              author={post.author}
+            />
           ))}
         </div>
       </div>

@@ -36,7 +36,7 @@ export default function JournalDayPage() {
   return (
     <>
       <JournalNavigation />
-      <div>
+      <div className="flex flex-col gap-y-6">
         {organisedPosts.map((postBatch) => (
           <JournalDayView
             key={postBatch.date.getTime()}
