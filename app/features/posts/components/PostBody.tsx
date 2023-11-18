@@ -11,7 +11,7 @@ export function PostBody({ body, className }: PostBodyProps) {
   const htmlContent = DOMPurify.sanitize(marked(body));
   return (
     <div
-      className={clsx(className, "prose prose-sm min-w-full")}
+      className={clsx(className, "prose min-w-full")}
       dangerouslySetInnerHTML={{
         __html: htmlContent,
       }}

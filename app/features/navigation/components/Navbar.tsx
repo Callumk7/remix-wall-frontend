@@ -7,8 +7,8 @@ import { Dispatch, SetStateAction } from "react";
 
 const links = [
   {
-    name: "Feed",
-    to: "/feed"
+    name: "Home",
+    to: "/",
   },
   {
     name: "Journal",

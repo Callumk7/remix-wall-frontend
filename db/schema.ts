@@ -28,6 +28,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 		relationName: "recipient",
 	}),
 	posts: many(posts),
+	savedPosts: many(postsSavedByUsers),
 	comments: many(comments),
 	friends: many(userFriends, {
 		relationName: "friends",
@@ -146,8 +147,20 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
 		fields: [posts.authorId],
 		references: [users.id],
 	}),
+	savedBy: many(postsSavedByUsers),
 	comments: many(comments),
 }));
+
+export const postsSavedByUsers = sqliteTable(
+	"posts_saved_by_users",
+	{
+		userId: text("user_id").notNull(),
+		postId: text("post_id").notNull(),
+	},
+	(t) => ({
+		pk: primaryKey(t.userId, t.postId),
+	}),
+);
 
 // Notes are to be thought of as the main currency of communication on the platform, akin to tweets.
 // They are short form communication that be be cross posted and used as messages, comments and feeds.

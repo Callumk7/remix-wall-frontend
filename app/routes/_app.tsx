@@ -44,22 +44,13 @@ export default function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   return (
     <div className="grid grid-cols-12">
-      <Transition
-        className="sticky col-span-2"
-        show={isSidebarOpen}
-        enter="transition-transform duration-300"
-        enterFrom="-translate-x-full"
-        enterTo="translate-x-0"
-        leave="transition-transform duration-300"
-        leaveFrom="translate-x-0"
-        leaveTo="-translate-x-full"
-      >
+      <div className="col-span-2">
         <Sidebar
           isOpen={isSidebarOpen}
           setIsOpen={setIsSidebarOpen}
           friends={friendsArray}
         />
-      </Transition>
+      </div>
       <div
         className={`${
           isSidebarOpen ? "col-span-10" : "col-span-12"

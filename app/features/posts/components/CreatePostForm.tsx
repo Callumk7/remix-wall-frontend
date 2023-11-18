@@ -22,6 +22,7 @@ export function CreatePostForm({ action }: CreatePostFormProps) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       fetcher.submit(formRef.current);
+      formRef.current?.reset()
     }
   };
 
