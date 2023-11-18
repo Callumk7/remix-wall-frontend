@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "4ce17f08-fd1f-4258-b725-87bee018f9be",
-  "prevId": "e1c4f6fb-2299-4890-bf22-8dc4f67a68cf",
+  "id": "5cfa1306-dedc-4cb1-b62a-2fc0f8e3c850",
+  "prevId": "14647fcb-5ac6-4c8d-bce5-f800f1d81da0",
   "tables": {
     "comments": {
       "name": "comments",
@@ -151,13 +151,6 @@
           "notNull": false,
           "autoincrement": false,
           "default": false
-        },
-        "journal_page_id": {
-          "name": "journal_page_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         },
         "body": {
           "name": "body",
@@ -309,13 +302,6 @@
           "notNull": false,
           "autoincrement": false,
           "default": "CURRENT_TIMESTAMP"
-        },
-        "journal_page_id": {
-          "name": "journal_page_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
         },
         "body": {
           "name": "body",

@@ -11,16 +11,8 @@ const links = [
     to: "/feed"
   },
   {
-    name: "Wall",
-    to: "/wall",
-  },
-  {
     name: "Journal",
     to: "/journal",
-  },
-  {
-    name: "Profile",
-    to: "/profile",
   },
   {
     name: "Friends",

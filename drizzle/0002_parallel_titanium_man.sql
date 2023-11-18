@@ -1,0 +1,1 @@
+ALTER TABLE `notes` DROP COLUMN `journal_page_id`;

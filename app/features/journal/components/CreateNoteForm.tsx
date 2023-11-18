@@ -8,14 +8,13 @@ import { KeyboardEvent, useRef } from "react";
 // TODO: Disable form when pending
 // TODO: Make this form work for walls as well
 
-interface CreatePostFormProps {
-  action: string;
+interface CreateNoteFormProps {
+  date?: Date;
+  action?: string;
 }
 
-export function CreatePostForm({ action }: CreatePostFormProps) {
-  // Remix fetcher stuff
+export function CreateNoteForm({ date, action }: CreateNoteFormProps) {
   const fetcher = useFetcher();
-  const isSubmitting = fetcher.state === "submitting";
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -35,10 +34,10 @@ export function CreatePostForm({ action }: CreatePostFormProps) {
       <TextArea
         type="text"
         name="body"
-        label="Post body"
+        label="Leave a note"
         onKeyDown={handleKeyDown}
       />
-      <Button type="submit">{isSubmitting ? "Sending..." : "Send Post"}</Button>
+      <Button type="submit">Leave a Note</Button>
       <div className="flex gap-2">
         <Switch label="Private" name="private" value="private" />
         <Switch label="Add One Day" name="addDay" value="one" />

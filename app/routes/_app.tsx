@@ -8,6 +8,7 @@ import { db } from "db";
 import { UserWithProfile, users } from "db/schema";
 import { eq } from "drizzle-orm";
 import { useState } from "react";
+import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { inspect } from "util";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -34,12 +35,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   userWithConnections?.friends.forEach(f => friendsArray.push(f.friend))
 
   // fetch sidebar data: friends and groups
-  return json({ session, friendsArray });
+  return typedjson({ session, friendsArray });
 };
 
 
 export default function AppLayout() {
-  const { session, friendsArray } = useLoaderData<typeof loader>()
+  const { session, friendsArray } = useTypedLoaderData<typeof loader>()
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   return (
     <div className="grid grid-cols-12">

@@ -1,1 +1,0 @@
-ALTER TABLE posts ADD `is_journal_entry` integer DEFAULT false NOT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE `notes` RENAME COLUMN `wall_user_id` TO `recipient_user_id`;

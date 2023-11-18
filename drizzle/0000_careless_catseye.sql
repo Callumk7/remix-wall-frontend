@@ -3,7 +3,8 @@ CREATE TABLE `comments` (
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` integer DEFAULT CURRENT_TIMESTAMP,
 	`is_updated` integer DEFAULT false,
-	`post_id` text NOT NULL,
+	`post_id` text,
+	`note_id` text,
 	`author_id` text NOT NULL,
 	`body` text NOT NULL
 );
@@ -16,6 +17,35 @@ CREATE TABLE `groups` (
 	`description` text
 );
 --> statement-breakpoint
+CREATE TABLE `journal_pages` (
+	`id` text NOT NULL,
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP,
+	`author_id` text NOT NULL,
+	`day` integer NOT NULL,
+	`month` integer NOT NULL,
+	`year` integer NOT NULL,
+	`entry_date` integer PRIMARY KEY DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `notes` (
+	`id` text PRIMARY KEY NOT NULL,
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP,
+	`is_updated` integer DEFAULT false,
+	`journal_page_id` text,
+	`body` text NOT NULL,
+	`author_id` text NOT NULL,
+	`in_group` integer DEFAULT false NOT NULL,
+	`group_id` text,
+	`on_wall` integer DEFAULT false NOT NULL,
+	`wall_user_id` text,
+	`is_private` integer DEFAULT false NOT NULL,
+	`is_journal_entry` integer DEFAULT false NOT NULL,
+	`likes` integer DEFAULT 0,
+	FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
 CREATE TABLE `posts` (
 	`id` text PRIMARY KEY NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
@@ -25,13 +55,11 @@ CREATE TABLE `posts` (
 	`month` integer NOT NULL,
 	`year` integer NOT NULL,
 	`entry_date` integer DEFAULT CURRENT_TIMESTAMP,
+	`journal_page_id` text NOT NULL,
 	`body` text NOT NULL,
 	`author_id` text NOT NULL,
-	`in_group` integer DEFAULT false NOT NULL,
-	`group_id` text,
-	`on_wall` integer DEFAULT false NOT NULL,
-	`wall_user_id` text,
-	`is_private` integer DEFAULT false NOT NULL,
+	`is_private` integer DEFAULT true NOT NULL,
+	`likes` integer DEFAULT 0,
 	FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint

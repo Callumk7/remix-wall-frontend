@@ -1,1 +1,0 @@
-ALTER TABLE posts ADD `likes` integer DEFAULT 0;

@@ -9,19 +9,13 @@ interface JournalPageCard {
   postBatch: PostBatchByDate;
 }
 export function JournalPageCard({ postBatch }: JournalPageCard) {
-  const cardHeaderText =
-    postBatch.date.getDate() +
-    "-" +
-    postBatch.date.getMonth() +
-    "-" +
-    postBatch.date.getFullYear();
 
   return (
     <Link
-      to={`/journal/${getDaysSinceUnixEpoch(postBatch.date)}`}
+      to={`/journal/dates/${postBatch.date.toISOString()}`}
       className="h-80 overflow-clip rounded-md border p-3 hover:bg-mauve3"
     >
-      <h3 className="text-lg font-bold">{cardHeaderText}</h3>
+      <h3 className="text-lg font-bold">{postBatch.date.toDateString()}</h3>
       <div className="flex flex-col gap-y-1">
         {postBatch.posts.map((post) => (
           <p key={post.id} className="text-sm text-mauve10">

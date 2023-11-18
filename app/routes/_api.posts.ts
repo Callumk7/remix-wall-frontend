@@ -1,6 +1,7 @@
 import { auth } from "@/features/auth/helper";
 import { uuidv4 } from "@/features/auth/uuidGenerator";
 import { getDayOfYear } from "@/features/posts/util";
+import { CalendarDate } from "@internationalized/date";
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { db } from "db";
 import { posts } from "db/schema";
@@ -33,38 +34,41 @@ const handlePOST = async (request: Request, userId: string) => {
 	const priv = formData.get("private")?.toString();
 	const addDay = formData.get("addDay")?.toString();
 
-	const entryDateISOString = formData.get("entryDate")?.toString();
-	const entryDate = new Date(entryDateISOString!);
+	// WARN: Currently hard-coding the date stuff to be the date the post was posted. This will be changed
+
+	const currentTimestamp = new Date();
+	const currentDate = new CalendarDate(
+		currentTimestamp.getFullYear(),
+		currentTimestamp.getMonth(),
+		currentTimestamp.getDate(),
+	);
+
+	if (addDay) {
+		currentTimestamp.setDate(currentTimestamp.getDate() + 1);
+		currentDate.add({ days: 1 });
+	}
 
 	let isPrivate = false;
 	if (priv) {
 		isPrivate = true;
 	}
 
-	const createdAt = new Date();
-	if (addDay) {
-		createdAt.setDate(createdAt.getDate() + 1);
-		entryDate.setDate(entryDate.getDate() + 1);
-	}
 
-	console.log(createdAt.getFullYear());
-
-	// Create an entry in the database, will need to be validated at some point
-	// I should create somewhere to put common queries
+	// Now we need to create the post and reference the journal page.
 	const newPost = await db.insert(posts).values({
 		id: `post_${uuidv4()}`,
+		createdAt: currentTimestamp,
+		updatedAt: currentTimestamp,
 		body: body!,
 		authorId: userId,
-		isPrivate: isPrivate,
-		createdAt: createdAt,
-		entryDate: entryDate,
-		day: getDayOfYear(entryDate),
-		month: entryDate.getMonth(),
-		year: entryDate.getFullYear(),
-	});
+		day: currentDate.day,
+		month: currentDate.month,
+		year: currentDate.year,
+		entryDate: currentDate.toDate("gmt"),
+		isPrivate: isPrivate
+	}).returning();
 
-	console.log(JSON.stringify(newPost));
+	console.log(newPost)
 
 	return newPost;
 };
-

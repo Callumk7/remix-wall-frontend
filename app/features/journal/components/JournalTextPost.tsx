@@ -4,8 +4,8 @@ import { useFetcher } from "@remix-run/react";
 import { Post } from "db/schema";
 import { useEffect, useRef, useState } from "react";
 import { marked } from "marked";
-import DOMPurify from "dompurify";
 import { TextArea } from "@/components/ui/forms";
+import { PostBody } from "@/features/posts/components/PostBody";
 
 /**
  * This component is used for displaying and editing journal entries, Post entities
@@ -73,14 +73,8 @@ export function JournalTextPost({ post }: JournalTextPostProps) {
           />
         </fetcher.Form>
       ) : (
-        <div
-          className="prose"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(marked(content)),
-          }}
-        ></div>
+        <PostBody body={post.body} />
       )}
-      <div>This is some text</div>
     </div>
   );
 }

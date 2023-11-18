@@ -21,7 +21,7 @@ export default function Index() {
     <div className="mx-auto mt-10 w-4/5 text-center">
       <h1 className="text-5xl font-bold">Lets get Started</h1>
       {data.map((user) => (
-        <Link variant={"link"} to={`/wall/${user.id}`} key={user.id}>
+        <Link variant={"link"} to={`/journal/${user.id}`} key={user.id}>
           a user id: {user.id}
         </Link>
       ))}

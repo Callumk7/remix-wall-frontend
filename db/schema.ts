@@ -3,7 +3,6 @@ import {
 	integer,
 	primaryKey,
 	sqliteTable,
-	sqliteView,
 	text,
 } from "drizzle-orm/sqlite-core";
 
@@ -22,13 +21,14 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 		fields: [users.id],
 		references: [profiles.userId],
 	}),
-	posts: many(posts, {
+	notes: many(notes, {
 		relationName: "author",
 	}),
-	comments: many(comments),
-	wallPosts: many(posts, {
-		relationName: "wall_user",
+	wallPosts: many(notes, {
+		relationName: "recipient",
 	}),
+	posts: many(posts),
+	comments: many(comments),
 	friends: many(userFriends, {
 		relationName: "friends",
 	}),
@@ -88,7 +88,7 @@ export const groups = sqliteTable("groups", {
 });
 export const groupsRelations = relations(groups, ({ many }) => ({
 	members: many(usersToGroups),
-	posts: many(posts),
+	notes: many(notes),
 }));
 
 export const usersToGroups = sqliteTable(
@@ -110,6 +110,9 @@ export const usersToGroups = sqliteTable(
 //
 //
 // POST TABLES AND RELATIONS
+// Posts are JOURNAL ENTRIES that lean towards private journalling that can be shared with others.
+// They are longer form. They are organised into days, and many posts can be composed into a single
+// day's Journal entry for that day.
 export const posts = sqliteTable("posts", {
 	id: text("id").primaryKey(),
 	// created and updated are dates when the post was created in the database
@@ -120,13 +123,46 @@ export const posts = sqliteTable("posts", {
 		sql`CURRENT_TIMESTAMP`,
 	),
 	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
+
 	// these times are what the user sets in the UI for journal entries
 	day: integer("day").notNull(),
 	month: integer("month").notNull(),
 	year: integer("year").notNull(),
-	entryDate: integer("entry_date", { mode: "timestamp_ms" }).default(
+	entryDate: integer("entry_date", { mode: "timestamp" }).default(
 		sql`CURRENT_TIMESTAMP`,
 	),
+	body: text("body").notNull(),
+	authorId: text("author_id")
+		.notNull()
+		.references(() => users.id),
+	isPrivate: integer("is_private", { mode: "boolean" })
+		.notNull()
+		.default(true),
+	likes: integer("likes").default(0),
+});
+
+export const postsRelations = relations(posts, ({ one, many }) => ({
+	author: one(users, {
+		fields: [posts.authorId],
+		references: [users.id],
+	}),
+	comments: many(comments),
+}));
+
+// Notes are to be thought of as the main currency of communication on the platform, akin to tweets.
+// They are short form communication that be be cross posted and used as messages, comments and feeds.
+export const notes = sqliteTable("notes", {
+	id: text("id").primaryKey(),
+	// created and updated are dates when the post was created in the database
+	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
+	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
+	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
+
+	// these times are what the user sets in the UI for journal entries
 	body: text("body").notNull(),
 	authorId: text("author_id")
 		.notNull()
@@ -134,7 +170,7 @@ export const posts = sqliteTable("posts", {
 	inGroup: integer("in_group", { mode: "boolean" }).notNull().default(false),
 	groupId: text("group_id"),
 	onWall: integer("on_wall", { mode: "boolean" }).notNull().default(false),
-	wallUserId: text("wall_user_id"),
+	recipientUserId: text("recipient_user_id"),
 	isPrivate: integer("is_private", { mode: "boolean" })
 		.notNull()
 		.default(false),
@@ -144,20 +180,20 @@ export const posts = sqliteTable("posts", {
 	likes: integer("likes").default(0),
 });
 
-export const postsRelations = relations(posts, ({ one, many }) => ({
+export const notesRelations = relations(notes, ({ one, many }) => ({
 	author: one(users, {
-		fields: [posts.authorId],
+		fields: [notes.authorId],
 		references: [users.id],
 		relationName: "author",
 	}),
 	group: one(groups, {
-		fields: [posts.groupId],
+		fields: [notes.groupId],
 		references: [groups.id],
 	}),
 	wall: one(users, {
-		fields: [posts.wallUserId],
+		fields: [notes.recipientUserId],
 		references: [users.id],
-		relationName: "wall_user",
+		relationName: "recipient",
 	}),
 	comments: many(comments),
 }));
@@ -171,7 +207,8 @@ export const comments = sqliteTable("comments", {
 		sql`CURRENT_TIMESTAMP`,
 	),
 	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
-	postId: text("post_id").notNull(),
+	postId: text("post_id"),
+	noteId: text("note_id"),
 	authorId: text("author_id").notNull(),
 	body: text("body").notNull(),
 });
@@ -180,6 +217,10 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 	post: one(posts, {
 		fields: [comments.postId],
 		references: [posts.id],
+	}),
+	note: one(notes, {
+		fields: [comments.postId],
+		references: [notes.id],
 	}),
 	author: one(users, {
 		fields: [comments.authorId],
@@ -193,6 +234,7 @@ export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type Group = typeof groups.$inferSelect;
 export type Comment = typeof comments.$inferSelect;
+export type Note = typeof notes.$inferSelect;
 
 // Created Types:
 export interface UserWithProfile extends User {
@@ -224,4 +266,12 @@ export interface PostWithAuthorCommentsRecipient
 export interface PostAndCommentsWithAuthorsAndRecipient
 	extends PostWithAuthorAndCommentsWithAuthor {
 	wall: UserWithProfile;
+}
+
+export interface NoteWithAuthor extends Note {
+	author: UserWithProfile;
+}
+
+export interface NoteWithAuthorAndComments extends NoteWithAuthor {
+	comments: Comment[];
 }

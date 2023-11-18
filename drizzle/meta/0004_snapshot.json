@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "4ce17f08-fd1f-4258-b725-87bee018f9be",
-  "prevId": "e1c4f6fb-2299-4890-bf22-8dc4f67a68cf",
+  "id": "b23f6e6e-ae33-4fcc-90b0-51508dc16705",
+  "prevId": "5cfa1306-dedc-4cb1-b62a-2fc0f8e3c850",
   "tables": {
     "comments": {
       "name": "comments",
@@ -152,13 +152,6 @@
           "autoincrement": false,
           "default": false
         },
-        "journal_page_id": {
-          "name": "journal_page_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "body": {
           "name": "body",
           "type": "text",
@@ -196,8 +189,8 @@
           "autoincrement": false,
           "default": false
         },
-        "wall_user_id": {
-          "name": "wall_user_id",
+        "recipient_user_id": {
+          "name": "recipient_user_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -309,13 +302,6 @@
           "notNull": false,
           "autoincrement": false,
           "default": "CURRENT_TIMESTAMP"
-        },
-        "journal_page_id": {
-          "name": "journal_page_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
         },
         "body": {
           "name": "body",
@@ -555,6 +541,8 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {}
+    "columns": {
+      "\"notes\".\"wall_user_id\"": "\"notes\".\"recipient_user_id\""
+    }
   }
 }

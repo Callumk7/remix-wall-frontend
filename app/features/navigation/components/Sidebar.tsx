@@ -26,7 +26,7 @@ export function Sidebar({ isOpen, setIsOpen, friends }: SidebarProps) {
       <Calendar className={"mt-10"} />
       <div className="flex flex-col gap-4 my-8">
         {friends.map((friend) => (
-          <Link to={`/wall/${friend.id}`} key={friend.id}>{friend.profile.userName}</Link>
+          <Link to={`/journal/${friend.id}`} key={friend.id}>{friend.profile.userName}</Link>
         ))}
       </div>
     </aside>
