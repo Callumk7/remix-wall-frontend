@@ -13,7 +13,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function JournalLayout() {
   return (
     <div className="px-8">
-      <CreateJournalEntry />
+      <CreateJournalEntry action="/journal" className="my-6" />
       <Outlet />
     </div>
   );

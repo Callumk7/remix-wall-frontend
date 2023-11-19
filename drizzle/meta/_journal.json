@@ -43,6 +43,13 @@
       "when": 1700329478222,
       "tag": "0005_dizzy_puppet_master",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1700398195377,
+      "tag": "0006_cultured_demogoblin",
+      "breakpoints": true
     }
   ]
 }

@@ -16,28 +16,6 @@ import { notes, posts, postsSavedByUsers, profiles } from "db/schema";
 import { eq } from "drizzle-orm";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 
-// Save a new note on a user's journal page. This functionality is incomplete
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const session = await auth(request);
-
-  const formData = await request.formData();
-  const noteBody = formData.get("body")?.toString();
-
-  const recipient = params.userId;
-
-  const newNote = await db
-    .insert(notes)
-    .values({
-      id: `note_${uuidv4()}`,
-      authorId: session.id,
-      recipientUserId: recipient!,
-      body: noteBody!,
-    })
-    .returning();
-
-  return newNote;
-};
-
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await auth(request);
 
@@ -74,7 +52,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return typedjson({ userData, userPosts, userNotes, likedPosts });
 };
 
-export default function UserJournalPage() {
+export default function JournalIndex() {
   const { userPosts, userData, userNotes, likedPosts } =
     useTypedLoaderData<typeof loader>();
   return (
@@ -88,7 +66,6 @@ export default function UserJournalPage() {
           {userPosts.map((post) => (
             <EditableTextPost key={post.id} post={post} />
           ))}
-          <CreateJournalEntry />
           <div className="flex flex-col gap-y-2">
             {likedPosts.map((likedPost) => (
               <SavedJournalPost

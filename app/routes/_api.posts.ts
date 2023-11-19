@@ -30,6 +30,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export const handlePOST = async (request: Request, userId: string) => {
 	const formData = await request.formData();
+	const title = formData.get("title")?.toString();
 	const body = formData.get("body")?.toString();
 	const priv = formData.get("private")?.toString();
 	const addDay = formData.get("addDay")?.toString();
@@ -59,6 +60,7 @@ export const handlePOST = async (request: Request, userId: string) => {
 		id: `post_${uuidv4()}`,
 		createdAt: currentTimestamp,
 		updatedAt: currentTimestamp,
+		title: title,
 		body: body!,
 		authorId: userId,
 		day: currentDate.day,

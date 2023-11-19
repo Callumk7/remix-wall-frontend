@@ -116,6 +116,7 @@ export const usersToGroups = sqliteTable(
 // day's Journal entry for that day.
 export const posts = sqliteTable("posts", {
 	id: text("id").primaryKey(),
+	title: text("title"),
 	// created and updated are dates when the post was created in the database
 	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,

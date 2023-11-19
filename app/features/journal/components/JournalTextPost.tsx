@@ -16,10 +16,16 @@ interface JournalTextPostProps {
 export function JournalTextPost({ post }: JournalTextPostProps) {
   const fetcher = useFetcher();
   return (
-    <Link to={`/journal/posts/${post.id}`} className="relative flex flex-col gap-2 border-b border-mauve4 p-3 transition-colors ease-in-out hover:bg-mauve1">
+    <Link
+      to={`/journal/posts/${post.id}`}
+      className="relative flex flex-col gap-2 border-b border-mauve4 p-3 transition-colors ease-in-out hover:bg-mauve1"
+    >
       <JournalPostControlBar postId={post.id} />
       {post.isUpdated && (
         <div className="text-sm font-light text-mauve10">edited</div>
+      )}
+      {post.title && (
+        <h2 className="text-4xl font-black text-ruby10">{post.title}</h2>
       )}
       <PostBody body={post.body} />
       <div className="flex flex-col gap-y-2">
