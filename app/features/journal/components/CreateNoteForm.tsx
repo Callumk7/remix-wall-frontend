@@ -26,18 +26,21 @@ export function CreateNoteForm({ date, action }: CreateNoteFormProps) {
 
   return (
     <fetcher.Form
-      className="flex flex-col gap-3 p-4 relative"
+      className="relative flex flex-col gap-3 p-4"
       method="POST"
       action={action}
       ref={formRef}
     >
+      <input type="hidden" value="note" name="type" />
       <TextArea
         type="text"
         name="body"
         label="Leave a note"
         onKeyDown={handleKeyDown}
       />
-      <Button className="absolute bottom-8 right-8" type="submit">Leave a Note</Button>
+      <Button className="absolute bottom-8 right-8" type="submit">
+        Leave a Note
+      </Button>
     </fetcher.Form>
   );
 }

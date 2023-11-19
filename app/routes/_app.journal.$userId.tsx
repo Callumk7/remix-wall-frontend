@@ -10,29 +10,49 @@ import {
   redirect,
 } from "@remix-run/node";
 import { db } from "db";
-import { UserWithProfile, notes, posts, profiles, users } from "db/schema";
+import { UserWithProfile, comments, notes, posts, users } from "db/schema";
 import { eq } from "drizzle-orm";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
+import invariant from "tiny-invariant";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const session = await auth(request);
 
   const formData = await request.formData();
-  const noteBody = formData.get("body")?.toString();
 
-  const recipient = params.userId;
+  const type = formData.get("type");
+  invariant(type, "type must be provided");
 
-  const newNote = await db
-    .insert(notes)
-    .values({
-      id: `note_${uuidv4()}`,
-      authorId: session.id,
-      recipientUserId: recipient!,
-      body: noteBody!,
-    })
-    .returning();
+  if (type === "note") {
+    const noteBody = formData.get("body")?.toString();
 
-  return newNote;
+    const recipient = params.userId;
+
+    const newNote = await db
+      .insert(notes)
+      .values({
+        id: `note_${uuidv4()}`,
+        authorId: session.id,
+        recipientUserId: recipient!,
+        body: noteBody!,
+      })
+      .returning();
+
+    return newNote;
+  } else if (type === "comment") {
+    const commentBody = formData.get("comment")?.toString();
+    const postId = formData.get("postId")?.toString();
+    const newComment = await db
+      .insert(comments)
+      .values({
+        id: `com_${uuidv4()}`,
+        postId: postId!,
+        authorId: session.id,
+        body: commentBody!,
+      })
+      .returning();
+    return newComment;
+  }
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -45,18 +65,28 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   const journalUserId = params.userId;
 
-  const userData = await db.query.users.findFirst({
+  const userData = (await db.query.users.findFirst({
     where: eq(users.id, journalUserId!),
     with: {
-      profile: true
-    }
-  }) as UserWithProfile;
+      profile: true,
+    },
+  })) as UserWithProfile;
 
   // I need a function with error handling for getting all posts. for now..
-  const userPosts = await db
-    .select()
-    .from(posts)
-    .where(eq(posts.authorId, journalUserId!));
+  const userPosts = await db.query.posts.findMany({
+    where: eq(posts.authorId, journalUserId!),
+    with: {
+      comments: {
+        with: {
+          author: {
+            with: {
+              profile: true,
+            },
+          },
+        },
+      },
+    },
+  });
 
   const userNotes = await db.query.notes.findMany({
     where: eq(notes.recipientUserId, journalUserId!),

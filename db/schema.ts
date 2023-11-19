@@ -259,6 +259,11 @@ export interface PostWithAuthor extends Post {
 export interface PostWithComments extends Post {
 	comments: Comment[];
 }
+
+export interface PostWithCommentsWithAuthor extends Post {
+	comments: CommentWithAuthor[];
+}
+
 export interface PostWithAuthorAndComments extends PostWithAuthor {
 	comments: Comment[];
 }

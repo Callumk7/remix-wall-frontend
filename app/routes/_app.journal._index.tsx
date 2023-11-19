@@ -1,3 +1,4 @@
+import { CreateJournalEntry } from "@/components/posts/CreateJournalEntry";
 import { EditableTextPost } from "@/components/posts/EditablePost";
 import { auth } from "@/features/auth/helper";
 import { uuidv4 } from "@/features/auth/uuidGenerator";
@@ -87,6 +88,7 @@ export default function UserJournalPage() {
           {userPosts.map((post) => (
             <EditableTextPost key={post.id} post={post} />
           ))}
+          <CreateJournalEntry />
           <div className="flex flex-col gap-y-2">
             {likedPosts.map((likedPost) => (
               <SavedJournalPost

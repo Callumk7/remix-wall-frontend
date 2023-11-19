@@ -28,7 +28,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	}
 };
 
-const handlePOST = async (request: Request, userId: string) => {
+export const handlePOST = async (request: Request, userId: string) => {
 	const formData = await request.formData();
 	const body = formData.get("body")?.toString();
 	const priv = formData.get("private")?.toString();
