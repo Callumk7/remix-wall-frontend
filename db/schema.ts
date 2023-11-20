@@ -134,6 +134,7 @@ export const posts = sqliteTable("posts", {
 		sql`CURRENT_TIMESTAMP`,
 	),
 	body: text("body").notNull(),
+	pageId: text("page_id"),
 	authorId: text("author_id")
 		.notNull()
 		.references(() => users.id),
@@ -147,6 +148,10 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
 	author: one(users, {
 		fields: [posts.authorId],
 		references: [users.id],
+	}),
+	page: one(pages, {
+		fields: [posts.pageId],
+		references: [pages.id]
 	}),
 	savedBy: many(postsSavedByUsers),
 	comments: many(comments),
@@ -167,6 +172,7 @@ export const postsSavedByUsers = sqliteTable(
 // They are short form communication that be be cross posted and used as messages, comments and feeds.
 export const notes = sqliteTable("notes", {
 	id: text("id").primaryKey(),
+	pageId: text("page_id"),
 	// created and updated are dates when the post was created in the database
 	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,
@@ -210,6 +216,10 @@ export const notesRelations = relations(notes, ({ one, many }) => ({
 		relationName: "recipient",
 	}),
 	comments: many(comments),
+	page: one(pages, {
+		fields: [notes.pageId],
+		references: [pages.id],
+	}),
 }));
 
 export const comments = sqliteTable("comments", {
@@ -240,6 +250,35 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 		fields: [comments.authorId],
 		references: [users.id],
 	}),
+}));
+
+export const pages = sqliteTable("pages", {
+	id: text("id").primaryKey(),
+	ownerId: text("owner_id").notNull(),
+	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
+	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
+	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
+
+	// these times are what the user sets in the UI for journal entries
+	day: integer("day").notNull(),
+	month: integer("month").notNull(),
+	year: integer("year").notNull(),
+	entryDate: integer("entry_date", { mode: "timestamp" }).default(
+		sql`CURRENT_TIMESTAMP`,
+	),
+});
+
+export const pagesRelations = relations(pages, ({ one, many }) => ({
+	owner: one(users, {
+		fields: [pages.ownerId],
+		references: [users.id],
+	}),
+	posts: many(posts),
+	notes: many(notes),
 }));
 
 // Generated Types:

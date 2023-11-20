@@ -66,7 +66,7 @@ export default function JournalIndex() {
           {userPosts.map((post) => (
             <EditableTextPost key={post.id} post={post} />
           ))}
-          <div className="flex flex-col gap-y-2">
+          <div className="flex flex-wrap gap-2">
             {likedPosts.map((likedPost) => (
               <SavedJournalPost
                 key={likedPost.posts?.id}

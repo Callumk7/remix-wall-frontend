@@ -11,7 +11,7 @@ export function SavedJournalPost({ post }: SavedJournalPostProps) {
       {post.isUpdated && (
         <div className="text-sm font-light text-mauve10">edited</div>
       )}
-      <PostBody body={post.body} />
+      <div className="w-full max-w-sm max-h-80 overflow-hidden">{post.body}</div>
     </div>
   );
 }

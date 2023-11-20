@@ -1,7 +1,7 @@
 import { auth } from "@/features/auth/helper";
 import { JournalTextPost } from "@/features/journal/components/JournalTextPost";
-import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { useLoaderData, useParams } from "@remix-run/react";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { useParams } from "@remix-run/react";
 import { db } from "db";
 import { posts } from "db/schema";
 import { and, eq } from "drizzle-orm";

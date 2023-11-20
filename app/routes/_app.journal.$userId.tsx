@@ -109,12 +109,12 @@ export default function UserJournalPage() {
     useTypedLoaderData<typeof loader>();
   return (
     <>
-      <h1 className="text-5xl font-bold">
+      <h1 className="text-5xl font-bold mb-6">
         {userData?.profile.userName}&apos;s{" "}
         <span className="underline decoration-ruby9">Journal</span>.
       </h1>
       <div className="grid grid-cols-12 gap-3">
-        <div className="col-span-8">
+        <div className="col-span-8 flex flex-col gap-y-6">
           {userPosts.map((post) => (
             <JournalTextPost key={post.id} post={post} />
           ))}
