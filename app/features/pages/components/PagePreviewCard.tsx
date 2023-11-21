@@ -8,7 +8,7 @@ export function PagePreviewCard({ page }: { page: PageWithPostsAndNotes }) {
   return (
     <Link to={`/journal/pages/${page.id}`}>
       <Card>
-        <h1>{page.title}</h1>
+        <h1 className="font-bold">{page.title}</h1>
         <h2>{page.entryDate?.toDateString()}</h2>
         <div className={`${styles.textFade} max-h-20`}>
           {page.posts.map((post) => (

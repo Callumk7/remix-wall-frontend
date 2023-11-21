@@ -1,17 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { DiscIcon, Pencil1Icon, PinRightIcon, TrashIcon } from "@radix-ui/react-icons";
 import { Form, useFetcher, useParams } from "@remix-run/react";
-import { Post } from "db/schema";
+import { Post, PostWithCommentsWithAuthor } from "db/schema";
 import { marked } from "marked";
 import DOMPurify from 'isomorphic-dompurify';
-import { TextArea } from "@/components/ui/forms";
+import { Input, TextArea } from "@/components/ui/forms";
 import { useEditable } from "@/hooks/editable";
+import { PostBody } from "@/features/posts/components/PostBody";
+import { CommentCard } from "@/features/posts/components/Comment";
 
 // This post should be used for posts that are owned by the post author.
 // The content can be edited and updated on the database.
 
 interface EditableTextPostProps {
-  post: Post;
+  post: PostWithCommentsWithAuthor;
 }
 export function EditableTextPost({ post }: EditableTextPostProps) {
   // TODO: This hook.. I think it needs some cleaning up.
@@ -28,7 +30,6 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
 
   const fetcher = useFetcher();
   const isDeleting = fetcher.state !== "idle";
-  const htmlContent = DOMPurify.sanitize(marked(post.body!));
 
   return (
     <div className="group relative flex flex-col gap-2 border-b border-mauve4 p-3">
@@ -67,18 +68,20 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
         </Form>
       ) : (
         <div className="flex flex-col gap-y-1">
-          {post.onWall && (
-            <p className="text-sm font-light text-mauve8">
-              This was posted on{" "}
-              <span className="text-ruby8">{post.wallUserId}</span>'s wall
-            </p>
-          )}
-          <div
-            className="prose"
-            dangerouslySetInnerHTML={{
-              __html: htmlContent,
-            }}
-          ></div>
+        {post.title && (
+          <h2 className="text-4xl font-black text-ruby10">{post.title}</h2>
+        )}
+        <PostBody body={post.body} />
+        <div className="flex flex-col gap-y-2">
+          {post.comments.map((comment) => (
+            <CommentCard key={comment.id} comment={comment} />
+          ))}
+          <fetcher.Form method="POST" action={`/journal/${post.authorId}`}>
+            <input type="hidden" value="comment" name="type" />
+            <input type="hidden" value={post.id} name="postId" />
+            <Input name="comment" placeholder="Leave a comment?" />
+          </fetcher.Form>
+        </div>
         </div>
       )}
     </div>

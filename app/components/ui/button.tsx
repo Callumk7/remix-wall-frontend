@@ -12,7 +12,8 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-mauve12 text-mauve1",
         secondary: "bg-ruby9 text-mauve1",
-        link: "hover:bg-mauve4"
+        link: "hover:bg-mauve4",
+        ghost: "hover:bg-mauve4"
       },
       size: {
         sm: "px-2 py-1 text-sm",
