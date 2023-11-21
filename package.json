@@ -29,7 +29,7 @@
 		"marked": "^9.1.5",
 		"react": "^18.2.0",
 		"react-aria": "^3.30.0",
-		"react-aria-components": "1.0.0-beta.2",
+		"react-aria-components": "1.0.0-rc.0",
 		"react-dom": "^18.2.0",
 		"remix-auth": "^3.6.0",
 		"remix-auth-form": "^1.4.0",

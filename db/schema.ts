@@ -252,8 +252,12 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 	}),
 }));
 
+// pages are collections of data for organising and viewing your saved stuff, 
+// kind of like a scrapbook. I am debating constraining each page to a date, or 
+// allow the user to build out their collection however they like. 
 export const pages = sqliteTable("pages", {
 	id: text("id").primaryKey(),
+	title: text("title").notNull().default("Page Title"),
 	ownerId: text("owner_id").notNull(),
 	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,
@@ -288,6 +292,8 @@ export type Profile = typeof profiles.$inferSelect;
 export type Group = typeof groups.$inferSelect;
 export type Comment = typeof comments.$inferSelect;
 export type Note = typeof notes.$inferSelect;
+export type Page = typeof pages.$inferSelect;
+export type PageInsert = typeof pages.$inferInsert;
 
 // Created Types:
 export interface UserWithProfile extends User {
@@ -332,4 +338,9 @@ export interface NoteWithAuthor extends Note {
 
 export interface NoteWithAuthorAndComments extends NoteWithAuthor {
 	comments: Comment[];
+}
+
+export interface PageWithPostsAndNotes extends Page {
+	posts: PostWithAuthor[];
+	notes: NoteWithAuthor[];
 }

@@ -1,15 +1,13 @@
 import { auth } from "@/features/auth/helper";
-import { Navbar } from "@/features/navigation/components/Navbar";
+import { Navigation } from "@/features/navigation/components/Navigation";
 import { Sidebar } from "@/features/navigation/components/Sidebar";
-import { Transition } from "@headlessui/react";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet } from "@remix-run/react";
 import { db } from "db";
 import { UserWithProfile, users } from "db/schema";
 import { eq } from "drizzle-orm";
 import { useState } from "react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
-import { inspect } from "util";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await auth(request);
@@ -56,7 +54,7 @@ export default function AppLayout() {
           isSidebarOpen ? "col-span-10" : "col-span-12"
         } transition-all duration-300`}
       >
-        <Navbar
+        <Navigation
           session={session}
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}

@@ -1,8 +1,8 @@
 import {
   Popover as AriaPopover,
   Menu as AriaMenu,
-  Item as AriaItem,
-  ItemProps,
+  MenuItem as AriaItem,
+  MenuItemProps,
   PopoverProps,
   MenuProps,
 } from "react-aria-components";
@@ -24,19 +24,19 @@ const Popover = forwardRef<HTMLElement, PopoverProps>(({ className, ...props }, 
 });
 Popover.displayName = "Popover";
 
-const Menu = forwardRef<HTMLDivElement, MenuProps<ItemProps>>(
+const Menu = forwardRef<HTMLDivElement, MenuProps<MenuItemProps>>(
   ({ className, ...props }, ref) => {
     return <AriaMenu className={clsx(className, "outline-none")} ref={ref} {...props} />;
   },
 );
 Menu.displayName = "Menu";
 
-const MenuItem = forwardRef<HTMLElement, ItemProps>(({ className, ...props }, ref) => {
+const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(({ className, ...props }, ref) => {
   return (
     <AriaItem
       className={clsx(
         className,
-        "group box-border flex w-full cursor-default items-center rounded-md px-3 py-2 text-gray-900 outline-none focus:bg-ruby9 focus:text-white",
+        "group box-border flex w-full cursor-default items-center rounded-md px-3 py-2 outline-none focus:bg-ruby9 focus:text-white",
       )}
       ref={ref}
       {...props}

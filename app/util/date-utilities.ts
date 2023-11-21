@@ -16,3 +16,6 @@ export function getDateFromDaysSinceUnixEpoch(days: number): Date {
 	return date;
 }
 
+export function createCalendarDate(date: Date): CalendarDate {
+	return new CalendarDate(date.getFullYear(), date.getMonth(), date.getDate());
+}

@@ -1,9 +1,11 @@
 import { Button, Link } from "@/components/ui/button";
+import { Menu, MenuItem, Popover } from "@/components/ui/menu";
 import { UserControls } from "@/features/auth/components/UserControls";
 import { UserData } from "@/features/auth/types";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { useLocation } from "@remix-run/react";
 import { Dispatch, SetStateAction } from "react";
+import { MenuTrigger } from "react-aria-components";
 
 const links = [
   {
@@ -24,17 +26,17 @@ const links = [
   },
 ];
 
-interface NavbarProps {
+interface NavigationProps {
   session: UserData | null;
   isSidebarOpen: boolean;
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Navbar({
+export function Navigation({
   session,
   isSidebarOpen,
   setIsSidebarOpen,
-}: NavbarProps) {
+}: NavigationProps) {
   return (
     <nav className="my-5 flex w-full justify-between px-8">
       <div className="flex gap-x-6">
@@ -43,6 +45,7 @@ export function Navbar({
             <ChevronRightIcon />
           </Button>
         )}
+        <CreateNewMenu />
         {links.map((link) => (
           <NavLink key={link.name} link={link} />
         ))}
@@ -67,4 +70,18 @@ function NavLink({ link }: { link: { name: string; to: string } }) {
       {link.name}
     </Link>
   );
+}
+
+function CreateNewMenu() {
+  return (
+    <MenuTrigger>
+      <Button aria-label="Menu">Create New..</Button>
+      <Popover>
+        <Menu>
+          <MenuItem>Page..</MenuItem>
+          <MenuItem>Post..</MenuItem>
+        </Menu>
+      </Popover>
+    </MenuTrigger>
+  )
 }
