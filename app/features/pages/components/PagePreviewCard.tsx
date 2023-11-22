@@ -7,9 +7,9 @@ import styles from "./page-preview-card.module.css";
 export function PagePreviewCard({ page }: { page: PageWithPostsAndNotes }) {
   return (
     <Link to={`/journal/pages/${page.id}`}>
-      <Card>
+      <Card className="w-full h-56">
+        <h2 className="text-mauve10 text-sm">{page.entryDate?.toDateString()}</h2>
         <h1 className="font-bold">{page.title}</h1>
-        <h2>{page.entryDate?.toDateString()}</h2>
         <div className={`${styles.textFade} max-h-20`}>
           {page.posts.map((post) => (
             <div key={post.id}>

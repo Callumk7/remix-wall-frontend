@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Input, TextArea } from "@/components/ui/forms";
 import { auth } from "@/features/auth/helper";
 import { uuidv4 } from "@/features/auth/uuidGenerator";
-import { JournalTextPost } from "@/features/journal/components/JournalTextPost";
+import { createPostFromPage } from "@/features/pages/queries/create-post-from-page";
 import { createCalendarDate } from "@/util/date-utilities";
 import { getFormValues } from "@/util/forms";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import { Form, useFetcher, useParams } from "@remix-run/react";
 import { db } from "db";
 import { pages, posts } from "db/schema";
 import { eq } from "drizzle-orm";
@@ -17,45 +17,6 @@ import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import invariant from "tiny-invariant";
 
 // TODO: Move this somewhere better
-const handlePOST = async (request: Request, userId: string) => {
-  const keys: string[] = ["title", "body", "private", "addDay", "pageId"];
-  const formValues = await getFormValues(keys, request);
-  const currentTimestamp = new Date();
-  const currentDate = createCalendarDate(currentTimestamp);
-
-  if (formValues.addDay) {
-    currentTimestamp.setDate(currentTimestamp.getDate() + 1);
-    currentDate.add({ days: 1 });
-  }
-
-  let isPrivate = false;
-  if (formValues.priv) {
-    isPrivate = true;
-  }
-
-  // Now we need to create the post and reference the journal page.
-  const newPost = await db
-    .insert(posts)
-    .values({
-      id: `post_${uuidv4()}`,
-      createdAt: currentTimestamp,
-      updatedAt: currentTimestamp,
-      title: formValues.title,
-      body: formValues.body!,
-      authorId: userId,
-      day: currentDate.day,
-      month: currentDate.month,
-      year: currentDate.year,
-      entryDate: currentDate.toDate("gmt"),
-      isPrivate: isPrivate,
-      pageId: formValues.pageId,
-    })
-    .returning();
-
-  console.log(newPost);
-
-  return newPost;
-};
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const session = await auth(request);
@@ -85,6 +46,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const session = await auth(request);
 
+  // WARN: This is stupid. This needs to be cleaned up
   const dupeRequest = new Request(request);
 
   const keys: string[] = ["_action", "pageId", "title"];
@@ -100,7 +62,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ updatedPage });
     // TODO: Make this more explicit.
   } else {
-    const response = await handlePOST(request, session.id);
+    const response = await createPostFromPage(request, session.id);
     return json({ response });
   }
 };

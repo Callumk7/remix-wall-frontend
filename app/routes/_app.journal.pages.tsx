@@ -1,13 +1,11 @@
 import { auth } from "@/features/auth/helper";
 import { uuidv4 } from "@/features/auth/uuidGenerator";
 import { createCalendarDate } from "@/util/date-utilities";
-import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { ActionFunctionArgs, json } from "@remix-run/node";
+import { Outlet } from "@remix-run/react";
 import { db } from "db";
-import { Page, PageInsert, pages } from "db/schema";
-import { typedjson, useTypedLoaderData } from "remix-typedjson";
+import {  PageInsert, pages } from "db/schema";
 
-// This page is going to handle pages, which are collections of posts and notes
 export const action = async ({ request }: ActionFunctionArgs) => {
   const session = await auth(request);
   const formData = await request.formData();

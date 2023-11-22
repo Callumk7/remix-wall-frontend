@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/forms";
 import { auth } from "@/features/auth/helper";
+import { organisePagesByDate } from "@/features/journal/functions/util";
 import { PagePreviewCard } from "@/features/pages/components/PagePreviewCard";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { Form, Link } from "@remix-run/react";
@@ -13,10 +11,6 @@ import { typedjson, useTypedLoaderData } from "remix-typedjson";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await auth(request);
 
-  const allDates = await db
-    .selectDistinct({ dates: pages.entryDate, months: pages.month })
-    .from(pages);
-
   const allPages = (await db.query.pages.findMany({
     with: {
       posts: true,
@@ -24,15 +18,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     },
   })) as PageWithPostsAndNotes[];
 
-  return typedjson({ session, allPages });
+  const pagesByDate = organisePagesByDate(allPages);
+
+  return typedjson({ session, allPages, pagesByDate });
 };
 export default function PageView() {
-  const { allPages } = useTypedLoaderData<typeof loader>();
+  const { allPages, pagesByDate } = useTypedLoaderData<typeof loader>();
   return (
     <div>
-      <div className="grid grid-cols-4 gap-2">
-        {allPages.map((page) => (
-          <PagePreviewCard key={page.id} page={page} />
+      <div className="flex flex-col gap-8">
+        {pagesByDate.map((pageBatch) => (
+          <>
+            <h2 className="font-bold py-3 text-xl text-cyan9">
+              {pageBatch.date.toString()}
+            </h2>
+            <div
+              key={pageBatch.date.toString()}
+              className="grid grid-cols-4 gap-2"
+            >
+              {pageBatch.pages.map((page) => (
+                <PagePreviewCard key={page.id} page={page} />
+              ))}
+            </div>
+          </>
         ))}
       </div>
     </div>
