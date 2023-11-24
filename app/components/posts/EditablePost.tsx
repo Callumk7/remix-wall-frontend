@@ -1,5 +1,5 @@
 import { Form, useFetcher } from "@remix-run/react";
-import { PostWithCommentsWithAuthor } from "db/schema";
+import { Post, PostWithNotesWithAuthor } from "db/schema";
 import { Input, TextArea } from "@/components/ui/forms";
 import { useEditable } from "@/hooks/editable";
 import { PostBody } from "@/features/posts/components/PostBody";
@@ -11,7 +11,7 @@ import { EditPostControls } from "./EditPostControls";
 // for editing, posting edits to the database, and then syncing those changes.
 
 interface EditableTextPostProps {
-  post: PostWithCommentsWithAuthor;
+  post: Post;
 }
 export function EditableTextPost({ post }: EditableTextPostProps) {
   // TODO: This hook.. I think it needs some cleaning up.
@@ -55,16 +55,6 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
             <PostBody body={post.body} />
           </div>
         )}
-      </div>
-      <div className="flex flex-col col-span-1 gap-y-2">
-        {post.comments.map((comment) => (
-          <CommentCard key={comment.id} comment={comment} />
-        ))}
-        <fetcher.Form method="POST" action={`/journal/${post.authorId}`}>
-          <input type="hidden" value="comment" name="type" />
-          <input type="hidden" value={post.id} name="postId" />
-          <Input name="comment" placeholder="Leave a comment?" />
-        </fetcher.Form>
       </div>
     </div>
   );

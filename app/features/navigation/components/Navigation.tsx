@@ -19,6 +19,10 @@ const links = [
     to: "/journal",
   },
   {
+    name: "Feed",
+    to: "/feed",
+  },
+  {
     name: "Friends",
     to: "/friends",
   },

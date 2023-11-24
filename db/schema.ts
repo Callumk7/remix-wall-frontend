@@ -29,7 +29,6 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	}),
 	posts: many(posts),
 	savedPosts: many(postsSavedByUsers),
-	comments: many(comments),
 	friends: many(userFriends, {
 		relationName: "friends",
 	}),
@@ -249,36 +248,6 @@ export const subNotesRelations = relations(subNotes, ({one}) => ({
 	})
 }))
 
-export const comments = sqliteTable("comments", {
-	id: text("id").primaryKey(),
-	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
-		sql`CURRENT_TIMESTAMP`,
-	),
-	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).default(
-		sql`CURRENT_TIMESTAMP`,
-	),
-	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
-	postId: text("post_id"),
-	noteId: text("note_id"),
-	authorId: text("author_id").notNull(),
-	body: text("body").notNull(),
-});
-
-export const commentsRelations = relations(comments, ({ one }) => ({
-	post: one(posts, {
-		fields: [comments.postId],
-		references: [posts.id],
-	}),
-	note: one(notes, {
-		fields: [comments.postId],
-		references: [notes.id],
-	}),
-	author: one(users, {
-		fields: [comments.authorId],
-		references: [users.id],
-	}),
-}));
-
 // pages are collections of data for organising and viewing your saved stuff,
 // kind of like a scrapbook. I am debating constraining each page to a date, or
 // allow the user to build out their collection however they like.
@@ -317,9 +286,10 @@ export type Post = typeof posts.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type Group = typeof groups.$inferSelect;
-export type Comment = typeof comments.$inferSelect;
 export type Note = typeof notes.$inferSelect;
 export type Page = typeof pages.$inferSelect;
+
+// Inserts
 export type PageInsert = typeof pages.$inferInsert;
 
 // Created Types:
@@ -333,38 +303,24 @@ export interface PostWithComments extends Post {
 	comments: Comment[];
 }
 
-export interface PostWithCommentsWithAuthor extends Post {
-	comments: CommentWithAuthor[];
+export interface PostWithNotesWithAuthor extends Post {
+	notes: NoteWithAuthor[];
 }
 
-export interface PostWithAuthorAndComments extends PostWithAuthor {
-	comments: Comment[];
+export interface PostWithAuthorAndNotes extends PostWithAuthor {
+	notes: Note[];
 }
 
-export interface CommentWithAuthor extends Comment {
-	author: UserWithProfile;
-}
-
-export interface PostWithAuthorAndCommentsWithAuthor extends PostWithAuthor {
-	comments: CommentWithAuthor[];
-}
-
-export interface PostWithAuthorCommentsRecipient
-	extends PostWithAuthorAndComments {
-	wall: UserWithProfile;
-}
-
-export interface PostAndCommentsWithAuthorsAndRecipient
-	extends PostWithAuthorAndCommentsWithAuthor {
-	wall: UserWithProfile;
+export interface PostWithAuthorAndNotesWithAuthor extends PostWithAuthor {
+	notes: NoteWithAuthor[];
 }
 
 export interface NoteWithAuthor extends Note {
 	author: UserWithProfile;
 }
 
-export interface NoteWithAuthorAndComments extends NoteWithAuthor {
-	comments: Comment[];
+export interface NoteWithSubnotesWithAuthors extends NoteWithAuthor {
+	subNotes: NoteWithAuthor[];
 }
 
 export interface PageWithPostsAndNotes extends Page {

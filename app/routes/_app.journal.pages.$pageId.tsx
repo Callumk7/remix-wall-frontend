@@ -25,19 +25,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const pageWithPosts = await db.query.pages.findFirst({
     where: eq(pages.id, pageId),
     with: {
-      posts: {
-        with: {
-          comments: {
-            with: {
-              author: {
-                with: {
-                  profile: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      posts: true,
     },
   });
   return typedjson({ session, pageWithPosts });
