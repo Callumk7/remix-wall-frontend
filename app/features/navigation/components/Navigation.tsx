@@ -1,7 +1,9 @@
 import { Button, Link } from "@/components/ui/button";
 import { Menu, MenuItem, Popover } from "@/components/ui/menu";
+import { SlideOver } from "@/components/ui/slide-over";
 import { UserControls } from "@/features/auth/components/UserControls";
 import { UserData } from "@/features/auth/types";
+import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { useLocation } from "@remix-run/react";
 import { Dispatch, SetStateAction } from "react";
@@ -45,7 +47,9 @@ export function Navigation({
             <ChevronRightIcon />
           </Button>
         )}
-        <CreateNewMenu />
+        <SlideOver trigger={<Button>Write a Post</Button>}>
+          <CreatePostForm action="/posts" />
+        </SlideOver>
         {links.map((link) => (
           <NavLink key={link.name} link={link} />
         ))}
@@ -83,5 +87,5 @@ function CreateNewMenu() {
         </Menu>
       </Popover>
     </MenuTrigger>
-  )
+  );
 }

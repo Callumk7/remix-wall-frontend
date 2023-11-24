@@ -1,5 +1,5 @@
+import { VariantProps, cva } from "class-variance-authority";
 import clsx from "clsx";
-import { placeholder } from "drizzle-orm";
 import { forwardRef } from "react";
 import {
   Input as AriaInput,
@@ -35,17 +35,40 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = "Input";
 
+const textAreaVariants = cva(
+  "w-full resize-none rounded-md p-2 ring-offset-mauve2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan7 focus-visible:ring-offset-2 disabled:pointer-events-none",
+  {
+    variants: {
+      variant: {
+        form: "border border-mauve6 bg-mauve1",
+        document: "bg-inherit",
+      },
+      size: {
+        sm: "h-44",
+        lg: "h-[75vh]",
+      },
+    },
+    defaultVariants: {
+      variant: "form",
+      size: "sm",
+    },
+  },
+);
+
+interface InputPropsWithVariants
+  extends InputProps,
+    VariantProps<typeof textAreaVariants> {}
+
 // TEXTAREA COMPONENT
-// TODO: Add class variance for different size text areas, and for resizeable text areas
-const TextArea = forwardRef<HTMLTextAreaElement, InputProps>(
-  ({ className, label, placeholder, ...props }, ref) => {
+const TextArea = forwardRef<HTMLTextAreaElement, InputPropsWithVariants>(
+  ({ className, label, placeholder, variant, size, ...props }, ref) => {
     return (
       <TextField {...props} className={clsx("flex flex-col gap-1", className)}>
         <Label className="text-sm text-mauve11">{label}</Label>
         <AriaTextArea
           placeholder={placeholder}
           ref={ref}
-          className="h-44 w-full resize-none rounded-md border border-mauve6 bg-mauve1 p-1 ring-offset-mauve2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan7 focus-visible:ring-offset-2 disabled:pointer-events-none"
+          className={clsx(textAreaVariants({className, variant, size}))}
         />
       </TextField>
     );

@@ -25,6 +25,9 @@ export default function Index() {
           a user id: {user.id}
         </Link>
       ))}
+      <span className="text-mint9">
+        This page should become the home feed at some point
+      </span>
     </div>
   );
 }

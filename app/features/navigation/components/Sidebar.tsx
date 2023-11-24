@@ -16,7 +16,7 @@ export function Sidebar({ isOpen, setIsOpen, friends }: SidebarProps) {
     <aside
       className={`${
         isOpen ? "" : "hidden"
-      } fixed z-30 px-2 flex h-max min-h-screen w-64 flex-col gap-y-2 rounded-md border bg-mauve2 p-3`}
+      } z-30 px-2 flex relative h-max min-h-screen min-w-fit w-full flex-col gap-y-2 rounded-md border bg-mauve2 p-3`}
     >
       <Button
         size={"icon"}

@@ -5,10 +5,10 @@ import {
 	sqliteTable,
 	text,
 } from "drizzle-orm/sqlite-core";
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+/////////////////////////////////////////////
 
-//
-//
-//
 // USER TABLES AND RELATIONS
 export const users = sqliteTable("users", {
 	id: text("id").primaryKey(),
@@ -151,10 +151,10 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
 	}),
 	page: one(pages, {
 		fields: [posts.pageId],
-		references: [pages.id]
+		references: [pages.id],
 	}),
 	savedBy: many(postsSavedByUsers),
-	comments: many(comments),
+	notes: many(notes),
 }));
 
 export const postsSavedByUsers = sqliteTable(
@@ -172,7 +172,15 @@ export const postsSavedByUsers = sqliteTable(
 // They are short form communication that be be cross posted and used as messages, comments and feeds.
 export const notes = sqliteTable("notes", {
 	id: text("id").primaryKey(),
+	// parent logic. We have an enum value for the parent type. we then have four options for foreign
+	// relations. This should simplify logic in the application layer.
+	parentType: text("parent_type", {
+		enum: ["note", "page", "group", "post"],
+	}),
+	parentNoteId: text("parent_note_id"),
+	groupId: text("group_id"),
 	pageId: text("page_id"),
+	postId: text("post_id"),
 	// created and updated are dates when the post was created in the database
 	createdAt: integer("created_at", { mode: "timestamp_ms" }).default(
 		sql`CURRENT_TIMESTAMP`,
@@ -181,20 +189,12 @@ export const notes = sqliteTable("notes", {
 		sql`CURRENT_TIMESTAMP`,
 	),
 	isUpdated: integer("is_updated", { mode: "boolean" }).default(false),
-
 	// these times are what the user sets in the UI for journal entries
 	body: text("body").notNull(),
 	authorId: text("author_id")
 		.notNull()
 		.references(() => users.id),
-	inGroup: integer("in_group", { mode: "boolean" }).notNull().default(false),
-	groupId: text("group_id"),
-	onWall: integer("on_wall", { mode: "boolean" }).notNull().default(false),
-	recipientUserId: text("recipient_user_id"),
 	isPrivate: integer("is_private", { mode: "boolean" })
-		.notNull()
-		.default(false),
-	isJournalEntry: integer("is_journal_entry", { mode: "boolean" })
 		.notNull()
 		.default(false),
 	likes: integer("likes").default(0),
@@ -210,17 +210,44 @@ export const notesRelations = relations(notes, ({ one, many }) => ({
 		fields: [notes.groupId],
 		references: [groups.id],
 	}),
-	wall: one(users, {
-		fields: [notes.recipientUserId],
-		references: [users.id],
-		relationName: "recipient",
-	}),
-	comments: many(comments),
 	page: one(pages, {
 		fields: [notes.pageId],
 		references: [pages.id],
 	}),
+	post: one(posts, {
+		fields: [notes.postId],
+		references: [posts.id],
+	}),
+	parentNote: one(notes, {
+		fields: [notes.parentNoteId],
+		references: [notes.id],
+	}),
+	childNotes: many(subNotes)
 }));
+
+export const subNotes = sqliteTable(
+	"sub_notes",
+	{
+		parentId: text("parent_id").notNull(),
+		childId: text("child_id").notNull(),
+	},
+	(t) => ({
+		pk: primaryKey(t.parentId, t.childId),
+	}),
+);
+
+export const subNotesRelations = relations(subNotes, ({one}) => ({
+	parent: one(notes, {
+		fields: [subNotes.parentId],
+		references: [notes.id],
+		relationName: "parent_note"
+	}),
+	child: one(notes, {
+		fields: [subNotes.childId],
+		references: [notes.id],
+		relationName: "child_note"
+	})
+}))
 
 export const comments = sqliteTable("comments", {
 	id: text("id").primaryKey(),
@@ -252,9 +279,9 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 	}),
 }));
 
-// pages are collections of data for organising and viewing your saved stuff, 
-// kind of like a scrapbook. I am debating constraining each page to a date, or 
-// allow the user to build out their collection however they like. 
+// pages are collections of data for organising and viewing your saved stuff,
+// kind of like a scrapbook. I am debating constraining each page to a date, or
+// allow the user to build out their collection however they like.
 export const pages = sqliteTable("pages", {
 	id: text("id").primaryKey(),
 	title: text("title").notNull().default("Page Title"),

@@ -31,6 +31,7 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
   return (
     <div className="grid grid-cols-3 gap-4">
       <div className="group col-span-2 relative flex flex-col gap-2 border-b border-mauve4 p-3">
+        <p className="text-sm text-mauve8">{post.entryDate?.toDateString()}</p>
         <EditPostControls postId={post.id} setIsEditing={setIsEditing} />
         {post.isUpdated && (
           <div className="text-sm font-light text-mauve10">edited</div>
