@@ -7,6 +7,7 @@ import { db } from "db";
 import {  PageInsert, pages } from "db/schema";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  console.log("journal.pages");
   const session = await auth(request);
   const formData = await request.formData();
   const title = formData.get("title")?.toString();

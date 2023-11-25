@@ -5,6 +5,7 @@ import { useEditable } from "@/hooks/editable";
 import { PostBody } from "@/features/posts/components/PostBody";
 import { CommentCard } from "@/features/posts/components/Comment";
 import { EditPostControls } from "./EditPostControls";
+import { useState } from "react";
 
 // INFO: This component is for OWNED POSTS viewed when logged in as the author.
 // There should be shared components, but this component will handle the logic
@@ -14,6 +15,8 @@ interface EditableTextPostProps {
   post: Post;
 }
 export function EditableTextPost({ post }: EditableTextPostProps) {
+  const [isCommenting, setIsCommenting] = useState<boolean>(false);
+
   // TODO: This hook.. I think it needs some cleaning up.
   const {
     isEditing,
@@ -30,9 +33,13 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
 
   return (
     <div className="grid grid-cols-3 gap-4">
-      <div className="group col-span-2 relative flex flex-col gap-2 border-b border-mauve4 p-3">
+      <div className="group relative col-span-2 flex flex-col gap-2 border-b border-mauve4 p-3">
         <p className="text-sm text-mauve8">{post.entryDate?.toDateString()}</p>
-        <EditPostControls postId={post.id} setIsEditing={setIsEditing} />
+        <EditPostControls
+          postId={post.id}
+          setIsEditing={setIsEditing}
+          setIsCommenting={setIsCommenting}
+        />
         {post.isUpdated && (
           <div className="text-sm font-light text-mauve10">edited</div>
         )}
@@ -54,6 +61,13 @@ export function EditableTextPost({ post }: EditableTextPostProps) {
             )}
             <PostBody body={post.body} />
           </div>
+        )}
+      </div>
+      <div className="col-span-1">
+        {isCommenting ? (
+          <div>I am commenting</div>
+        ) : (
+          null
         )}
       </div>
     </div>

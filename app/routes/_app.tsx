@@ -4,7 +4,7 @@ import { Sidebar } from "@/features/navigation/components/Sidebar";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { db } from "db";
-import { UserWithProfile, users } from "db/schema";
+import { UserWithProfile, pages, posts, users } from "db/schema";
 import { eq } from "drizzle-orm";
 import { useState } from "react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
@@ -20,25 +20,38 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         with: {
           friend: {
             with: {
-              profile: true
-            }
-          }
-        }
-      }
-    }
-  })
+              profile: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // NOTE: This is cool, but I need to deal with types..
+  //
+  // const allUserPages = await db
+  //   .select({ id: posts.id, date: posts.entryDate, title: posts.title })
+  //   .from(posts)
+  //   .where(eq(posts.authorId, session.id));
+  //
+  //   instead...
+
+  const allUserPages = await db
+    .select()
+    .from(pages)
+    .where(eq(pages.ownerId, session.id));
 
   // need this data in a format that is easier to manage
   const friendsArray: UserWithProfile[] = [];
-  userWithConnections?.friends.forEach(f => friendsArray.push(f.friend))
+  userWithConnections?.friends.forEach((f) => friendsArray.push(f.friend));
 
   // fetch sidebar data: friends and groups
-  return typedjson({ session, friendsArray });
+  return typedjson({ session, friendsArray, allUserPages });
 };
 
-
 export default function AppLayout() {
-  const { session, friendsArray } = useTypedLoaderData<typeof loader>()
+  const { session, friendsArray, allUserPages } = useTypedLoaderData<typeof loader>();
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   return (
     <div className="grid grid-cols-12">
@@ -47,6 +60,7 @@ export default function AppLayout() {
           isOpen={isSidebarOpen}
           setIsOpen={setIsSidebarOpen}
           friends={friendsArray}
+          pages={allUserPages}
         />
       </div>
       <div

@@ -12,17 +12,6 @@ export const getAllPosts = async (
 	try {
 		const allPosts = await db.query.posts.findMany({
 			where: eq(posts.authorId, userId),
-			with: {
-				comments: {
-					with: {
-						author: {
-							with: {
-								profile: true,
-							},
-						},
-					},
-				},
-			},
 		});
 		return allPosts;
 	} catch (err) {

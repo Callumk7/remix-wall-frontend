@@ -1,22 +1,19 @@
 import { EditableTextPost } from "@/components/posts/EditablePost";
 import { Button } from "@/components/ui/button";
 import { Input, TextArea } from "@/components/ui/forms";
+import { SlideOver } from "@/components/ui/slide-over";
 import { auth } from "@/features/auth/helper";
-import { uuidv4 } from "@/features/auth/uuidGenerator";
 import { createPostFromPage } from "@/features/pages/queries/create-post-from-page";
-import { createCalendarDate } from "@/util/date-utilities";
 import { getFormValues } from "@/util/forms";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Form, useFetcher, useParams } from "@remix-run/react";
 import { db } from "db";
-import { pages, posts } from "db/schema";
+import { pages } from "db/schema";
 import { eq } from "drizzle-orm";
 import { useEffect, useRef, useState } from "react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import invariant from "tiny-invariant";
-
-// TODO: Move this somewhere better
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const session = await auth(request);
@@ -32,6 +29,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  console.log("journal.pages.$pageId");
   const session = await auth(request);
 
   // WARN: This is stupid. This needs to be cleaned up
@@ -75,12 +73,14 @@ export default function PageView() {
           <EditableTextPost key={post.id} post={post} />
         ))}
       </div>
-      <Form className="flex flex-col gap-y-2" method="POST">
-        <Input name="title" />
-        <TextArea name="body" isRequired />
-        <input type="hidden" value={pageId} name="pageId" />
-        <Button type="submit">Post</Button>
-      </Form>
+      <SlideOver trigger={<Button size={"md"} className={"w-fit"}>New Post..</Button>}>
+        <Form className="flex flex-col gap-y-2 p-8" method="POST">
+          <Input name="title" />
+          <TextArea name="body" isRequired />
+          <input type="hidden" value={pageId} name="pageId" />
+          <Button type="submit">Post</Button>
+        </Form>
+      </SlideOver>
     </div>
   );
 }
@@ -128,7 +128,7 @@ function EditablePageTitle({ pageTitle, pageId }: EditablePageTitleProps) {
         </Form>
       ) : (
         <>
-          <h1 className="text-6xl font-black p-1">{pageTitle}</h1>
+          <h1 className="p-1 text-6xl font-black">{pageTitle}</h1>
           <Button
             size={"icon"}
             className="absolute -right-12 top-2 opacity-0 transition-opacity delay-100 duration-75 ease-in group-hover:opacity-100"

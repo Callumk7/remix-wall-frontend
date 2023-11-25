@@ -1,12 +1,19 @@
 import { auth } from "@/features/auth/helper";
 import { organisePagesByDate } from "@/features/journal/functions/util";
 import { PagePreviewCard } from "@/features/pages/components/PagePreviewCard";
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Form, Link } from "@remix-run/react";
 import { db } from "db";
 import { Page, PageWithPostsAndNotes, pages } from "db/schema";
-import { eq } from "drizzle-orm";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  console.log("journal.pages_index");
+  const session = await auth(request);
+  
+  return json({ session });
+};
+
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await auth(request);

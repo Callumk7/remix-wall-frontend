@@ -4,17 +4,22 @@ import { useFetcher } from "@remix-run/react";
 
 interface EditPostControlsProps {
   postId: string;
-  setIsEditing: (isEditing: boolean) => void; 
+  setIsEditing: (isEditing: boolean) => void;
+  setIsCommenting: (isCommenting: boolean) => void;
 }
 
-export function EditPostControls({ postId, setIsEditing }: EditPostControlsProps) {
+export function EditPostControls({
+  postId,
+  setIsEditing,
+  setIsCommenting,
+}: EditPostControlsProps) {
   // Fetcher stuff.
   const fetcher = useFetcher();
   const isDeleting = fetcher.state !== "idle";
 
   return (
     <div className="absolute right-3 top-3 flex gap-x-2 opacity-0 transition-opacity delay-200 ease-in group-hover:opacity-100">
-      <Button size={"icon"}>
+      <Button size={"icon"} onPress={() => setIsCommenting(true)}>
         <DiscIcon />
       </Button>
       <Button size={"icon"} onPress={() => setIsEditing(true)}>
