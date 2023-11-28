@@ -12,6 +12,7 @@
 		"migrate": "tsx db/migrate.ts"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.456.0",
 		"@headlessui/react": "^1.7.17",
 		"@internationalized/date": "^3.5.0",
 		"@radix-ui/colors": "^3.0.0",
@@ -27,6 +28,7 @@
 		"isbot": "^3.6.8",
 		"isomorphic-dompurify": "^1.9.0",
 		"marked": "^9.1.5",
+		"multer": "1.4.5-lts.1",
 		"react": "^18.2.0",
 		"react-aria": "^3.30.0",
 		"react-aria-components": "1.0.0-rc.0",

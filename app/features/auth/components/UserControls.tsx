@@ -1,4 +1,4 @@
-import { Button, Link } from "@/components/ui/button";
+import { Button, Link, NavLink } from "@/components/ui/button";
 import { UserData } from "../types";
 
 interface UserControlsProps {
@@ -14,7 +14,7 @@ export function UserControls({ user }: UserControlsProps) {
   } else {
     return (
         <div className="flex items-center gap-x-4">
-          <p>{user.email}</p>
+          <NavLink variant={"link"} to={`/profile`}>{user.email}</NavLink>
           <form action="/sign-out" method="POST">
             <Button variant={"secondary"} type="submit">
               Sign Out

@@ -75,6 +75,13 @@ export const profiles = sqliteTable("profiles", {
 	),
 });
 
+export const profilesRelations = relations(profiles, ({ one }) => ({
+	user: one(users, {
+		fields: [profiles.userId],
+		references: [users.id],
+	}),
+}));
+
 //
 //
 //
@@ -221,7 +228,7 @@ export const notesRelations = relations(notes, ({ one, many }) => ({
 		fields: [notes.parentNoteId],
 		references: [notes.id],
 	}),
-	childNotes: many(subNotes)
+	childNotes: many(subNotes),
 }));
 
 export const subNotes = sqliteTable(
@@ -235,18 +242,18 @@ export const subNotes = sqliteTable(
 	}),
 );
 
-export const subNotesRelations = relations(subNotes, ({one}) => ({
+export const subNotesRelations = relations(subNotes, ({ one }) => ({
 	parent: one(notes, {
 		fields: [subNotes.parentId],
 		references: [notes.id],
-		relationName: "parent_note"
+		relationName: "parent_note",
 	}),
 	child: one(notes, {
 		fields: [subNotes.childId],
 		references: [notes.id],
-		relationName: "child_note"
-	})
-}))
+		relationName: "child_note",
+	}),
+}));
 
 // pages are collections of data for organising and viewing your saved stuff,
 // kind of like a scrapbook. I am debating constraining each page to a date, or
