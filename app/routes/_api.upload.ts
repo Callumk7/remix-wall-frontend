@@ -23,7 +23,6 @@ export const action: ActionFunction = async ({ request }) => {
 			Bucket: process.env.BUCKET_NAME,
 			Key: fileName?.toString(),
 		}),
-		{ expiresIn: 15 * 60 },
 	);
 
 	const updatedProfileUrl = await db.update(profiles).set({

@@ -303,6 +303,9 @@ export type PageInsert = typeof pages.$inferInsert;
 export interface UserWithProfile extends User {
 	profile: Profile;
 }
+export interface UserWithProfileAndFriends extends UserWithProfile {
+	friends: UserWithProfile[]
+}
 export interface PostWithAuthor extends Post {
 	author: UserWithProfile;
 }

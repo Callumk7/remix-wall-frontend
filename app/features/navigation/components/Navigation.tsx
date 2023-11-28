@@ -6,6 +6,7 @@ import { UserData } from "@/features/auth/types";
 import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { useLocation } from "@remix-run/react";
+import { UserWithProfileAndFriends } from "db/schema";
 import { Dispatch, SetStateAction } from "react";
 import { MenuTrigger } from "react-aria-components";
 
@@ -33,13 +34,13 @@ const links = [
 ];
 
 interface NavigationProps {
-  session: UserData | null;
+  userData: UserWithProfileAndFriends;
   isSidebarOpen: boolean;
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export function Navigation({
-  session,
+  userData,
   isSidebarOpen,
   setIsSidebarOpen,
 }: NavigationProps) {
@@ -58,7 +59,7 @@ export function Navigation({
           <NavLink key={link.name} link={link} />
         ))}
       </div>
-      <UserControls user={session} />
+      <UserControls userData={userData} />
     </nav>
   );
 }

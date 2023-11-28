@@ -12,8 +12,10 @@ import { typedjson, useTypedLoaderData } from "remix-typedjson";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await auth(request);
 
-  // fetching a user with all their friends and groups, for the sidebar
-  const userWithConnections = await db.query.users.findFirst({
+  // we want to get both the user profile (for the user controls),
+  // and the friends list (for the sidebar). We can do that in a 
+  // single request:
+  const userData = await db.query.users.findFirst({
     where: eq(users.id, session.id),
     with: {
       friends: {
@@ -25,17 +27,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           },
         },
       },
+      profile: true
     },
   });
-
-  // NOTE: This is cool, but I need to deal with types..
-  //
-  // const allUserPages = await db
-  //   .select({ id: posts.id, date: posts.entryDate, title: posts.title })
-  //   .from(posts)
-  //   .where(eq(posts.authorId, session.id));
-  //
-  //   instead...
 
   const allUserPages = await db
     .select()
@@ -44,14 +38,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   // need this data in a format that is easier to manage
   const friendsArray: UserWithProfile[] = [];
-  userWithConnections?.friends.forEach((f) => friendsArray.push(f.friend));
+  userData?.friends.forEach((f) => friendsArray.push(f.friend));
 
   // fetch sidebar data: friends and groups
-  return typedjson({ session, friendsArray, allUserPages });
+  return typedjson({ session, friendsArray, allUserPages, userData });
 };
 
 export default function AppLayout() {
-  const { session, friendsArray, allUserPages } = useTypedLoaderData<typeof loader>();
+  const { friendsArray, allUserPages, userData } = useTypedLoaderData<typeof loader>();
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   return (
     <div className="grid grid-cols-12">
@@ -69,7 +63,7 @@ export default function AppLayout() {
         } transition-all duration-300`}
       >
         <Navigation
-          session={session}
+          userData={userData}
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />
