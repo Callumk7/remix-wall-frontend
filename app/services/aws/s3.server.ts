@@ -27,8 +27,10 @@ const uploadStreamToS3 = async (
 	return key;
 };
 
-// The UploadHandler gives us an AsyncIterable<Uint8Array>, so we need to convert that to something the aws-sdk can use.
-// Here, we are going to convert that to a buffer to be consumed by the aws-sdk.
+// The UploadHandler gives us an AsyncIterable<Uint8Array>, 
+// so we need to convert that to something the aws-sdk can use.
+// Here, we are going to convert that to a buffer to be 
+// consumed by the aws-sdk.
 async function convertToBuffer(a: AsyncIterable<Uint8Array>) {
 	const result = [];
 	for await (const chunk of a) {
