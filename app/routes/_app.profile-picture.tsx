@@ -37,6 +37,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     "lastName",
     "bio",
   ];
+
   const formValues = await getFormValues(keys, request);
 
   const updatedUser = await db
@@ -86,8 +87,11 @@ export default function ProfilePage() {
           label="Image URL"
           name="imageUrl"
         />
-        <FilePicker />
         <Button type="submit">Update</Button>
+      </Form>
+      <Form action="/upload" method="POST" encType="multipart/form-data">
+        <input type="file" name="upload" />
+        <Button type="submit">Submit</Button>
       </Form>
     </Container>
   );
@@ -113,12 +117,11 @@ function FilePicker() {
   return (
     <>
       <div>{selectedImage && <img src={selectedImage} alt="Selected" />}</div>
-      <Form encType="multipart/form-data">
+      <div>
         <FileTrigger onSelect={handleImageUpload}>
           <Button>Select File</Button>
         </FileTrigger>
-        <Button type="submit">Upload</Button>
-      </Form>
+      </div>
     </>
   );
 }
