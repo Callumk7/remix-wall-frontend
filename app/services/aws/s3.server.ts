@@ -3,6 +3,7 @@ import type { UploadHandler } from "@remix-run/node";
 import type { PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { uuidv4 } from "@/features/auth/uuidGenerator";
+import sharp from "sharp";
 
 export const s3 = new S3Client({
 	credentials: {
@@ -13,14 +14,14 @@ export const s3 = new S3Client({
 });
 
 const uploadStreamToS3 = async (
-	data: AsyncIterable<Uint8Array>,
+	data: Buffer,
 	key: string,
 	contentType: string,
 ) => {
 	const params: PutObjectCommandInput = {
 		Bucket: process.env.BUCKET_NAME,
 		Key: key,
-		Body: await convertToBuffer(data),
+		Body: data,
 		ContentType: contentType,
 	};
 
@@ -44,10 +45,20 @@ export const s3UploaderHandler: UploadHandler = async ({
 	data,
 	contentType,
 }) => {
-	// instead of using the filename, we are going to use a 
-	// random uuid for image names, so that we can use the image 
-	// in the app
-	// TODO: these urls currently have an expiry time, need to understand that
-	const randomImageName = `img_${uuidv4()}`
-	return await uploadStreamToS3(data, randomImageName, contentType);
+
+	// move the buffer conversion to the upload handler?
+	const imageBuffer = await convertToBuffer(data);
+
+	// resize the image so that it is not so big
+	const resizedImageBuffer = await sharp(imageBuffer)
+		.resize({
+			width: 500,
+			height: 500,
+			fit: "cover",
+		})
+		.jpeg()
+		.toBuffer();
+
+	const randomImageName = `img_${uuidv4()}`;
+	return await uploadStreamToS3(resizedImageBuffer, randomImageName, "image/jpeg");
 };
