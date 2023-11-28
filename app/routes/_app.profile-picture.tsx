@@ -4,7 +4,7 @@ import { Input, TextArea } from "@/components/ui/forms";
 import { auth } from "@/features/auth/helper";
 import { getFormValues } from "@/util/forms";
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { db } from "db";
 import { profiles, users } from "db/schema";
 import { eq } from "drizzle-orm";
@@ -69,6 +69,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function ProfilePage() {
   const { userData } = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
   return (
     <Container className="mt-10">
       <h1 className="mb-8 text-4xl font-extrabold">
@@ -89,10 +90,10 @@ export default function ProfilePage() {
         />
         <Button type="submit">Update</Button>
       </Form>
-      <Form action="/upload" method="POST" encType="multipart/form-data">
+      <fetcher.Form action="/upload" method="POST" encType="multipart/form-data">
         <input type="file" name="upload" />
         <Button type="submit">Submit</Button>
-      </Form>
+      </fetcher.Form>
     </Container>
   );
 }

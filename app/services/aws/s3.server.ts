@@ -2,6 +2,7 @@ import { S3Client } from "@aws-sdk/client-s3";
 import type { UploadHandler } from "@remix-run/node";
 import type { PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { uuidv4 } from "@/features/auth/uuidGenerator";
 
 export const s3 = new S3Client({
 	credentials: {
@@ -27,9 +28,9 @@ const uploadStreamToS3 = async (
 	return key;
 };
 
-// The UploadHandler gives us an AsyncIterable<Uint8Array>, 
+// The UploadHandler gives us an AsyncIterable<Uint8Array>,
 // so we need to convert that to something the aws-sdk can use.
-// Here, we are going to convert that to a buffer to be 
+// Here, we are going to convert that to a buffer to be
 // consumed by the aws-sdk.
 async function convertToBuffer(a: AsyncIterable<Uint8Array>) {
 	const result = [];
@@ -40,9 +41,13 @@ async function convertToBuffer(a: AsyncIterable<Uint8Array>) {
 }
 
 export const s3UploaderHandler: UploadHandler = async ({
-	filename,
 	data,
 	contentType,
 }) => {
-	return await uploadStreamToS3(data, filename!, contentType);
+	// instead of using the filename, we are going to use a 
+	// random uuid for image names, so that we can use the image 
+	// in the app
+	// TODO: these urls currently have an expiry time, need to understand that
+	const randomImageName = `img_${uuidv4()}`
+	return await uploadStreamToS3(data, randomImageName, contentType);
 };
